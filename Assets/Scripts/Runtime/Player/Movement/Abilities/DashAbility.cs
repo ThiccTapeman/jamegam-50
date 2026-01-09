@@ -41,6 +41,8 @@ namespace ThiccTapeman.Player.Movement
                 Debug.LogError($"DashAbility: Move action '{moveActionName}' not found in InputManager.");
             }
 
+            // Initialize state
+            dashQueued = false;
             lastDashTime = 0;
         }
 
@@ -51,9 +53,6 @@ namespace ThiccTapeman.Player.Movement
             if (!dashAction.GetTriggered(true)) return;
             if (Time.time - lastDashTime < dashCooldown) return;
 
-            Debug.Log("Dash queued");
-
-
             Vector2 input = moveAction.ReadValue<Vector2>();
             queuedDir = input.sqrMagnitude > 0.01f ? input.normalized : Vector2.right;
             dashQueued = true;
@@ -62,8 +61,6 @@ namespace ThiccTapeman.Player.Movement
         public override void FixedUpdateAbility()
         {
             if (!dashQueued || rb == null) return;
-
-            Debug.Log("Dashed!");
 
             // Keep current vertical velocity, dash horizontally/diagonally
             Vector2 v = rb.linearVelocity;

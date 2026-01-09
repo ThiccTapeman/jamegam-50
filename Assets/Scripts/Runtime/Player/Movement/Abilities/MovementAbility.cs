@@ -104,6 +104,9 @@ namespace ThiccTapeman.Player.Movement
             TryConsumeBufferedJump();
         }
 
+        /// <summary>
+        /// Updates the grounded and wall contact states using raycasts and collider casts.
+        /// </summary>
         private void UpdateEnvironmentChecks()
         {
             if (rb == null) return;
@@ -155,6 +158,10 @@ namespace ThiccTapeman.Player.Movement
             wallAllowsJump = wallAllowsSlide;
         }
 
+        /// <summary>
+        /// Casts the player's collider shape in the given direction to check for walls.
+        /// </summary>
+        /// <returns>If a wall was hit</returns>
         private bool CastWall(Vector2 dir, out RaycastHit2D bestHit)
         {
             bestHit = default;
@@ -178,6 +185,10 @@ namespace ThiccTapeman.Player.Movement
             return bestHit.collider != null;
         }
 
+        /// <summary>
+        /// Applies horizontal movement with smoothing based on ground/air acceleration and deceleration.
+        /// </summary>
+        /// <param name="moveInput">The current movement input that is being applied</param>
         private void ApplyHorizontalMovementSmooth(Vector2 moveInput)
         {
             if (rb == null) return;
@@ -205,6 +216,9 @@ namespace ThiccTapeman.Player.Movement
             rb.linearVelocity = v;
         }
 
+        /// <summary>
+        /// Applies wall slide clamping to vertical velocity when touching a wall.
+        /// </summary>
         private void ApplyWallSlideClamp()
         {
             if (rb == null) return;
@@ -218,6 +232,9 @@ namespace ThiccTapeman.Player.Movement
             rb.linearVelocity = v;
         }
 
+        /// <summary>
+        /// Consumes a buffered jump input if conditions allow (grounded or wall jump).
+        /// </summary>
         private void TryConsumeBufferedJump()
         {
             if (rb == null) return;
@@ -248,6 +265,7 @@ namespace ThiccTapeman.Player.Movement
                 jumpPressedTime = -Mathf.Infinity; // consume
             }
         }
+
 
         public override void DrawGizmos(Rigidbody2D rbRef, Collider2D colRef)
         {
