@@ -16,4 +16,5 @@ MonoBehaviour:
   description: FREEZE EFFECT
   maxStackSize: 10
   itemUseCooldown: 10
+  icon: {fileID: 21300030, guid: 04b7884d965020aa347cc21c140eb3d0, type: 3}
   effectDuration: 10

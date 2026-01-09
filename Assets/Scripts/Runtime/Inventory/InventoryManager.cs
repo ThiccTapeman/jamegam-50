@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using ThiccTapeman.Input;
 using ThiccTapeman.Inventory;
@@ -12,12 +13,19 @@ public class InventoryManager : MonoBehaviour
 {
     private static InventoryManager instance;
 
+    public Action OnInventoryChanged;
+    public Action OnCurrentSlotChanged;
+
     public static InventoryManager GetInstance()
     {
         if (instance == null)
         {
-            GameObject obj = new GameObject("InventoryManager");
-            instance = obj.AddComponent<InventoryManager>();
+            instance = FindObjectOfType<InventoryManager>();
+            if (instance == null)
+            {
+                GameObject obj = new GameObject("InventoryManager");
+                instance = obj.AddComponent<InventoryManager>();
+            }
         }
         return instance;
     }
@@ -32,13 +40,24 @@ public class InventoryManager : MonoBehaviour
     private InputItem useAction;
     private InputItem scrollAction;
 
-    private int currentSlotIndex = 0;
+    public int currentSlotIndex = 0;
 
     private float lastUseTime = -1f;
 
     private void Start()
     {
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
+
         inputManager = InputManager.GetInstance();
+
+        Debug.Log("Setting up InventoryManager with max slots: " + maxSlots);
+        Debug.Log("Setting up InventoryManager with slots: " + slots.Count);
+
         useAction = inputManager.GetAction("Player", "Interact");
         scrollAction = inputManager.GetAction("Player", "Scroll");
     }
@@ -69,11 +88,13 @@ public class InventoryManager : MonoBehaviour
             if (scrollValue > 0)
             {
                 currentSlotIndex = (currentSlotIndex + 1) % slots.Count;
+                OnCurrentSlotChanged?.Invoke();
                 Debug.Log($"Switched to slot {currentSlotIndex} with a: {slots[currentSlotIndex].itemSO?.itemName ?? "Empty"}");
             }
             else if (scrollValue < 0)
             {
                 currentSlotIndex = (currentSlotIndex - 1 + slots.Count) % slots.Count;
+                OnCurrentSlotChanged?.Invoke();
                 Debug.Log($"Switched to slot {currentSlotIndex} with a: {slots[currentSlotIndex].itemSO?.itemName ?? "Empty"}");
             }
 
@@ -89,6 +110,7 @@ public class InventoryManager : MonoBehaviour
 
         if (used)
         {
+            OnInventoryChanged?.Invoke();
             Debug.Log($"Used item in slot {currentSlotIndex}. Remaining amount: {currentSlot.Amount}");
         }
         else
@@ -106,6 +128,7 @@ public class InventoryManager : MonoBehaviour
             if (slot.itemSO == itemSO)
             {
                 slot.Amount += amount;
+                OnInventoryChanged?.Invoke();
                 return;
             }
         }
@@ -117,10 +140,30 @@ public class InventoryManager : MonoBehaviour
             {
                 slot.itemSO = itemSO;
                 slot.Amount = amount;
+                OnInventoryChanged?.Invoke();
                 return;
             }
         }
 
         Debug.LogWarning("No empty slots available to add the item.");
+    }
+
+    public void RemoveItem(ItemSO itemSO, int amount)
+    {
+        foreach (var slot in slots)
+        {
+            if (slot.itemSO.itemName == itemSO.itemName)
+            {
+                slot.Amount -= amount;
+                if (slot.Amount <= 0)
+                {
+                    slot.itemSO = null;
+                    slot.Amount = 0;
+                }
+                OnInventoryChanged?.Invoke();
+                return;
+            }
+        }
+        Debug.LogWarning("Item not found in inventory.");
     }
 }

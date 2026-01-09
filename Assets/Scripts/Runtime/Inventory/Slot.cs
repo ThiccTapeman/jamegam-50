@@ -29,7 +29,7 @@ public class Slot
         {
             if (EffectManager.GetInstance().TryApplyEffect(effectItem))
             {
-                Amount--;
+                InventoryManager.GetInstance().RemoveItem(itemSO, 1);
             }
         }
 

@@ -8,6 +8,7 @@ namespace ThiccTapeman.Inventory
         public string description;
         public int maxStackSize;
         public float itemUseCooldown;
+        public Sprite icon;
 
     }
 }
