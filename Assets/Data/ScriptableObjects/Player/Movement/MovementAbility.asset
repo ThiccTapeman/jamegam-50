@@ -16,8 +16,8 @@ MonoBehaviour:
   lockOtherAbilitiesDuringUse: 0
   moveActionName: Move
   jumpActionName: Jump
-  movementSpeed: 5
-  jumpSpeed: 9
+  movementSpeed: 6
+  jumpSpeed: 10
   groundAccel: 70
   groundDecel: 30
   airAccel: 15

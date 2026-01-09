@@ -44,4 +44,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a9bc40bcbf364419999bade22f127b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Inventory
-  slots: []
+  slots:
+  - Amount: 0
+    itemSO: {fileID: 0}
+  - Amount: 0
+    itemSO: {fileID: 0}
+  - Amount: 0
+    itemSO: {fileID: 0}
+  - Amount: 0
+    itemSO: {fileID: 0}
+  - Amount: 0
+    itemSO: {fileID: 0}
+  maxSlots: 5
+  useCooldown: 1
+  currentSlotIndex: 0
