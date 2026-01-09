@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13544b051fca941ab84d5bbd8937fa, type: 3}
+  m_Name: RewindEffectSO
+  m_EditorClassIdentifier: Assembly-CSharp::ThiccTapeman.Effects.RewindEffect
+  itemName: Rewind
+  description: REWIND EFFECT
+  maxStackSize: 10
+  itemUseCooldown: 2
+  effectDuration: 2

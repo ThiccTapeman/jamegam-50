@@ -6,6 +6,23 @@ namespace ThiccTapeman.Player.Movement
 {
     public class PlayerMovement : MonoBehaviour
     {
+        private static PlayerMovement instance;
+
+        public static PlayerMovement GetInstance()
+        {
+            if (instance == null)
+            {
+                GameObject obj = GameObject.Find("Player");
+                obj.TryGetComponent<PlayerMovement>(out instance);
+
+                if (instance == null)
+                {
+                    Debug.LogError("PlayerMovement instance not found in the scene.");
+                }
+            }
+            return instance;
+        }
+
         [Header("References")]
         [SerializeField] private Rigidbody2D rb;
         [SerializeField] private string actionMapPath;
@@ -15,6 +32,19 @@ namespace ThiccTapeman.Player.Movement
 
         private void Awake()
         {
+            // Ensure singleton
+            if (instance == null)
+            {
+                instance = this;
+            }
+            else if (instance != this)
+            {
+                Debug.LogWarning("Multiple instances of PlayerMovement detected. Destroying duplicate.");
+                Destroy(this.gameObject);
+                return;
+            }
+
+            // Setup InputManager
             inputManager = InputManager.GetInstance();
             inputManager.SetActionMapPath(actionMapPath);
 
@@ -58,6 +88,18 @@ namespace ThiccTapeman.Player.Movement
             {
                 ability.FixedUpdateAbility();
             }
+        }
+
+        public bool HasAbility<T>() where T : PlayerMovementAbility
+        {
+            foreach (var ability in abilities)
+            {
+                if (ability is T)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
 #if UNITY_EDITOR
