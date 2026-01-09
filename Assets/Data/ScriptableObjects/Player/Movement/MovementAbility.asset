@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 941f298381e61e84f9c975c4392970f1, type: 3}
+  m_Name: MovementAbility
+  m_EditorClassIdentifier: Assembly-CSharp::ThiccTapeman.Player.Movement.MovementAbility
+  rb: {fileID: 0}
+  lockOtherAbilitiesDuringUse: 0
+  moveActionName: Move
+  jumpActionName: Jump
+  movementSpeed: 5
+  jumpSpeed: 9
+  groundAccel: 70
+  groundDecel: 30
+  airAccel: 15
+  airDecel: 5
+  groundCheckDistance: 0.07
+  coyoteTime: 0.2
+  jumpBufferTime: 0.12
+  wallSlideTag: WallSlide
+  wallCheckDistance: 0.07
+  wallSlideSpeed: 2
+  wallJumpSpeed: 8
+  wallCheckDisableTime: 0.2
+  raycastInset: 0.05
+  wallCastExtra: 0
+  wallCastHits: 4
