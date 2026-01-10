@@ -61,7 +61,11 @@ namespace ThiccTapeman.Player.Movement
         private Vector2 cachedMoveInput;
         private float jumpPressedTime = -Mathf.Infinity;
 
-        public override void AwakeAbility(InputManager inputManager, Rigidbody2D rb)
+        private Animator anim;
+        private SpriteRenderer sr;
+        private int facing = 1; // 1 right, -1 left
+
+        public override void AwakeAbility(InputManager inputManager, Rigidbody2D rb, Animator animator)
         {
             this.inputManager = inputManager;
             this.rb = rb;
@@ -82,6 +86,10 @@ namespace ThiccTapeman.Player.Movement
 
             cachedMoveInput = Vector2.zero;
             jumpPressedTime = -Mathf.Infinity;
+
+            this.anim = animator;
+            sr = anim != null ? anim.GetComponentInChildren<SpriteRenderer>() : null;
+            facing = 1;
         }
 
         public override void UpdateAbility()
@@ -94,6 +102,7 @@ namespace ThiccTapeman.Player.Movement
                 jumpPressedTime = Time.time;
         }
 
+
         public override void FixedUpdateAbility()
         {
             UpdateEnvironmentChecks();
@@ -102,6 +111,35 @@ namespace ThiccTapeman.Player.Movement
             ApplyWallSlideClamp();
 
             TryConsumeBufferedJump();
+            UpdateAnimatorAndFlip();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void UpdateAnimatorAndFlip()
+        {
+            if (anim == null || rb == null) return;
+
+            Vector2 v = rb.linearVelocity;
+
+            // DeltaX: use speed magnitude on X (positive float)
+            anim.SetFloat("DeltaX", Mathf.Abs(v.x));
+
+            // DeltaY: signed vertical velocity
+            anim.SetFloat("DeltaY", v.y);
+
+            // Ground / wall slide
+            anim.SetBool("IsGrounded", isGrounded);
+            anim.SetBool("IsWallSliding", !isGrounded && isTouchingWall && wallAllowsSlide);
+
+            // Facing: prefer input, fallback to velocity
+            float dir = Mathf.Abs(cachedMoveInput.x) > 0.01f ? cachedMoveInput.x : v.x;
+            if (dir > 0.05f) facing = 1;
+            else if (dir < -0.05f) facing = -1;
+
+            if (sr != null)
+                sr.flipX = (facing == -1);
         }
 
         /// <summary>
@@ -249,8 +287,10 @@ namespace ThiccTapeman.Player.Movement
                 Vector2 dir = new Vector2(-wallDirection, 1f).normalized;
                 rb.linearVelocity = dir * wallJumpSpeed;
 
+                anim?.SetTrigger("Jump"); // Trigger animator
+
                 wallCheckDisableUntil = Time.time + wallCheckDisableTime;
-                jumpPressedTime = -Mathf.Infinity; // consume
+                jumpPressedTime = -Mathf.Infinity;
                 return;
             }
 
@@ -260,6 +300,8 @@ namespace ThiccTapeman.Player.Movement
                 Vector2 v = rb.linearVelocity;
                 v.y = jumpSpeed;
                 rb.linearVelocity = v;
+
+                anim?.SetTrigger("Jump"); // Trigger animator
 
                 wallCheckDisableUntil = Time.time + wallCheckDisableTime;
                 jumpPressedTime = -Mathf.Infinity; // consume

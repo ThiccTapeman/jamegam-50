@@ -22,7 +22,10 @@ namespace ThiccTapeman.Player.Movement
         private bool dashQueued;
         private Vector2 queuedDir = Vector2.right;
 
-        public override void AwakeAbility(InputManager inputManager, Rigidbody2D rb)
+        private Animator anim;
+        private SpriteRenderer sr;
+
+        public override void AwakeAbility(InputManager inputManager, Rigidbody2D rb, Animator animator)
         {
             this.inputManager = inputManager;
             this.rb = rb;
@@ -44,6 +47,9 @@ namespace ThiccTapeman.Player.Movement
             // Initialize state
             dashQueued = false;
             lastDashTime = 0;
+
+            this.anim = animator;
+            sr = anim != null ? anim.GetComponentInChildren<SpriteRenderer>() : null;
         }
 
         public override void UpdateAbility()
@@ -71,6 +77,10 @@ namespace ThiccTapeman.Player.Movement
 
             // Add impulse on top (nice punch)
             rb.AddForce(queuedDir * dashImpulse, ForceMode2D.Impulse);
+
+            anim?.SetTrigger("Dash");
+            if (sr != null && Mathf.Abs(queuedDir.x) > 0.05f)
+                sr.flipX = queuedDir.x < 0f;
 
             lastDashTime = Time.time;
             dashQueued = false;

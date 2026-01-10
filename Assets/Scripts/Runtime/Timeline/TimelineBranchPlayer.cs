@@ -13,6 +13,10 @@ namespace ThiccTapeman.Timeline
         float recordingEndTime;
 
         Rigidbody2D rb;
+        Animator animator;
+        SpriteRenderer sr;
+        bool hasDeltaYParam;
+        const string DeltaYParam = "DeltaY";
 
         public void Init(List<TimelineObject.TimelineState> branchStates, float spawnBranchTime)
         {
@@ -23,6 +27,9 @@ namespace ThiccTapeman.Timeline
             recordingEndTime = states[^1].time;
 
             rb = GetComponent<Rigidbody2D>();
+            animator = GetComponent<Animator>();
+            sr = GetComponentInChildren<SpriteRenderer>();
+            hasDeltaYParam = animator != null && HasAnimatorParameter(animator, DeltaYParam, AnimatorControllerParameterType.Float);
 
             Apply(Sample(recordingStartTime));
         }
@@ -71,6 +78,33 @@ namespace ThiccTapeman.Timeline
                 transform.position = s.position;
                 transform.rotation = Quaternion.Euler(0f, 0f, s.rotation);
             }
+
+            if (animator != null && s.hasAnimator)
+            {
+                if (s.hasDeltaY && hasDeltaYParam)
+                    animator.SetFloat(DeltaYParam, s.deltaY);
+
+                float normalized = s.animLoop
+                    ? Mathf.Repeat(s.animNormalizedTime, 1f)
+                    : Mathf.Clamp01(s.animNormalizedTime);
+
+                animator.Play(s.animStateHash, 0, normalized);
+                animator.Update(0f);
+            }
+
+            if (sr != null && s.hasSpriteRenderer)
+                sr.flipX = s.spriteFlipX;
+        }
+
+        static bool HasAnimatorParameter(Animator anim, string name, AnimatorControllerParameterType type)
+        {
+            if (anim == null) return false;
+            foreach (var p in anim.parameters)
+            {
+                if (p.name == name && p.type == type)
+                    return true;
+            }
+            return false;
         }
     }
 }
