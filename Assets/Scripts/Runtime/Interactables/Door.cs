@@ -1,32 +1,92 @@
 using System;
+using ThiccTapeman.Player.Reset;
 using Unity.VisualScripting;
-using UnityEditor.UI;
 using UnityEngine;
 
 public class Door : MonoBehaviour
 {
+    public enum DoorType
+    {
+        Sliding, Hinged
+    }
+
+    [Header("State")]
     [SerializeField] private bool isOpen = false;
+
+    [Header("Input")]
     [SerializeField] private Button openButton;
+
+    [Header("Sliding")]
+    [SerializeField] private float slideSpeed = 1.5f;     // units per second
+    [SerializeField] private float slideDistance = 2.0f;  // units
+    [SerializeField] private bool useLocalSpace = true;
+    [SerializeField] private Vector3 slideDirection = Vector3.up; // direction to open
+
+    private Vector3 closedPos;
+    private Vector3 openPos;
+
+    private ResetManager resetManager;
+    private bool isOpenByDefault = false;
 
     private void HandleButtonStateChanged(bool pressed)
     {
         isOpen = pressed;
-        // Here you would add the logic to animate the door opening/closing
         Debug.Log("Door is now " + (isOpen ? "Open" : "Closed"));
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        openButton.OnButtonStateChanged += HandleButtonStateChanged;
-    }
+        isOpenByDefault = isOpen;
+        // Cache positions
+        if (useLocalSpace)
+        {
+            closedPos = transform.localPosition;
+            openPos = closedPos + slideDirection.normalized * slideDistance;
+        }
+        else
+        {
+            closedPos = transform.position;
+            openPos = closedPos + slideDirection.normalized * slideDistance;
+        }
 
-    // Update is called once per frame
+        if (openButton != null)
+            openButton.OnButtonStateChanged += HandleButtonStateChanged;
+
+
+        resetManager = ResetManager.GetInstance();
+        if (resetManager != null)
+            resetManager.OnReset += OnReset;
+    }
+    private void OnReset()
+    {
+        // Reset door to closed state
+        isOpen = isOpenByDefault;
+    }
     void Update()
     {
+        Vector3 target = isOpen ? openPos : closedPos;
 
+        if (useLocalSpace)
+        {
+            transform.localPosition = Vector3.MoveTowards(
+                transform.localPosition,
+                target,
+                slideSpeed * Time.deltaTime
+            );
+        }
+        else
+        {
+            transform.position = Vector3.MoveTowards(
+                transform.position,
+                target,
+                slideSpeed * Time.deltaTime
+            );
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (openButton != null)
+            openButton.OnButtonStateChanged -= HandleButtonStateChanged;
     }
 }
-
-
-

@@ -120,6 +120,24 @@ public class InventoryManager : MonoBehaviour
     }
 
 
+    public void SetInventory(Slot[] newSlots)
+    {
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (i > newSlots.Length - 1)
+            {
+                slots[i].itemSO = null;
+                slots[i].Amount = 0;
+                continue;
+            }
+            slots[i].itemSO = newSlots[i].itemSO;
+            slots[i].Amount = newSlots[i].Amount;
+        }
+        OnInventoryChanged?.Invoke();
+
+    }
+
+
     public void AddItem(ItemSO itemSO, int amount)
     {
         // Check if item already exists in a slot
