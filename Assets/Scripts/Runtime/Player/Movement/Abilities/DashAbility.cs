@@ -11,6 +11,9 @@ namespace ThiccTapeman.Player.Movement
         public float minDashSpeed = 8f;          // guarantees movement even with high mass/drag
         public float dashCooldown = 0.35f;
 
+        [SerializeField] private SoundManager.SoundVariations dashes;
+        [SerializeField] private int dashAudioSourceIndex = 1;
+
         [Header("Input")]
         public string dashActionName = "Dash";
         public string moveActionName = "Move";
@@ -24,6 +27,7 @@ namespace ThiccTapeman.Player.Movement
 
         private Animator anim;
         private SpriteRenderer sr;
+        private AudioSource dashSource;
 
         public override void AwakeAbility(InputManager inputManager, Rigidbody2D rb, Animator animator)
         {
@@ -50,6 +54,7 @@ namespace ThiccTapeman.Player.Movement
 
             this.anim = animator;
             sr = anim != null ? anim.GetComponentInChildren<SpriteRenderer>() : null;
+            dashSource = GetOrCreateAudioSource(dashAudioSourceIndex);
         }
 
         public override void UpdateAbility()
@@ -81,6 +86,9 @@ namespace ThiccTapeman.Player.Movement
             anim?.SetTrigger("Dash");
             if (sr != null && Mathf.Abs(queuedDir.x) > 0.05f)
                 sr.flipX = queuedDir.x < 0f;
+
+            if (dashes != null && dashSource != null)
+                SoundManager.PlaySound(dashes, dashSource);
 
             lastDashTime = Time.time;
             dashQueued = false;

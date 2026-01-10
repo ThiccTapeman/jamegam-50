@@ -18,5 +18,23 @@ namespace ThiccTapeman.Player.Movement
 
         // Physics
         public virtual void FixedUpdateAbility() { }
+
+        protected AudioSource GetOrCreateAudioSource(int index)
+        {
+            if (rb == null) return null;
+
+            var sources = rb.GetComponents<AudioSource>();
+            if (index >= 0 && index < sources.Length)
+                return sources[index];
+
+            AudioSource created = null;
+            for (int i = sources.Length; i <= index; i++)
+            {
+                created = rb.gameObject.AddComponent<AudioSource>();
+                created.playOnAwake = false;
+            }
+
+            return created;
+        }
     }
 }

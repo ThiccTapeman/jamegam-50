@@ -5,7 +5,7 @@ using ThiccTapeman.Player.Reset;
 public abstract class Button : MonoBehaviour
 {
     [SerializeField] private AudioSource buttonAudioSource;
-    [SerializeField] private AudioClip buttonPressClip;
+    [SerializeField] private SoundManager.SoundVariations buttonPressClip;
     public Action<bool> OnButtonStateChanged;
 
     [SerializeField] private bool isPressed = false;
@@ -30,16 +30,7 @@ public abstract class Button : MonoBehaviour
     {
         if (buttonAudioSource != null && buttonPressClip != null)
         {
-            buttonAudioSource.PlayOneShot(buttonPressClip);
-        }
-
-        if (pressed)
-        {
-            Debug.Log("Button Pressed");
-        }
-        else
-        {
-            Debug.Log("Button Released");
+            buttonPressClip.PlaySound(buttonAudioSource);
         }
     }
 

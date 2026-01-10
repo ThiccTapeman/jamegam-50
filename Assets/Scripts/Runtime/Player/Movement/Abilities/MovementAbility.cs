@@ -39,6 +39,13 @@ namespace ThiccTapeman.Player.Movement
         [SerializeField] private float wallCastExtra = 0.02f;
         [SerializeField] private int wallCastHits = 4;
 
+        [Header("Sounds")]
+        [SerializeField] private SoundManager.SoundVariations steps; // each foot placement should play one step
+        [SerializeField] private SoundManager.SoundVariations jumps;
+        [SerializeField] private float stepInterval = 0.35f;
+        [SerializeField] private float stepSpeedThreshold = 0.1f;
+        [SerializeField] private int soundAudioSourceIndex = 0;
+
         private InputItem moveAction;
         private InputItem jumpAction;
 
@@ -64,6 +71,8 @@ namespace ThiccTapeman.Player.Movement
         private Animator anim;
         private SpriteRenderer sr;
         private int facing = 1; // 1 right, -1 left
+        private AudioSource soundSource;
+        private float lastStepTime = -Mathf.Infinity;
 
         public override void AwakeAbility(InputManager inputManager, Rigidbody2D rb, Animator animator)
         {
@@ -90,6 +99,7 @@ namespace ThiccTapeman.Player.Movement
             this.anim = animator;
             sr = anim != null ? anim.GetComponentInChildren<SpriteRenderer>() : null;
             facing = 1;
+            soundSource = GetOrCreateAudioSource(soundAudioSourceIndex);
         }
 
         public override void UpdateAbility()
@@ -112,6 +122,7 @@ namespace ThiccTapeman.Player.Movement
 
             TryConsumeBufferedJump();
             UpdateAnimatorAndFlip();
+            UpdateFootsteps();
         }
 
         /// <summary>
@@ -140,6 +151,19 @@ namespace ThiccTapeman.Player.Movement
 
             if (sr != null)
                 sr.flipX = (facing == -1);
+        }
+
+        private void UpdateFootsteps()
+        {
+            if (steps == null || soundSource == null || rb == null) return;
+            if (!isGrounded) return;
+
+            float speed = Mathf.Abs(rb.linearVelocity.x);
+            if (speed < stepSpeedThreshold) return;
+            if (Time.time - lastStepTime < stepInterval) return;
+
+            SoundManager.PlaySound(steps, soundSource);
+            lastStepTime = Time.time;
         }
 
         /// <summary>
@@ -288,6 +312,8 @@ namespace ThiccTapeman.Player.Movement
                 rb.linearVelocity = dir * wallJumpSpeed;
 
                 anim?.SetTrigger("Jump"); // Trigger animator
+                if (jumps != null && soundSource != null)
+                    SoundManager.PlaySound(jumps, soundSource);
 
                 wallCheckDisableUntil = Time.time + wallCheckDisableTime;
                 jumpPressedTime = -Mathf.Infinity;
@@ -302,6 +328,8 @@ namespace ThiccTapeman.Player.Movement
                 rb.linearVelocity = v;
 
                 anim?.SetTrigger("Jump"); // Trigger animator
+                if (jumps != null && soundSource != null)
+                    SoundManager.PlaySound(jumps, soundSource);
 
                 wallCheckDisableUntil = Time.time + wallCheckDisableTime;
                 jumpPressedTime = -Mathf.Infinity; // consume

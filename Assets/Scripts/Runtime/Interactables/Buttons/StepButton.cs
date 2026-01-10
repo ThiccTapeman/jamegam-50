@@ -5,7 +5,7 @@ public class StepButton : Button
     int stepCount = 0;
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && !other.isTrigger)
         {
             stepCount++;
             if (stepCount == 1)
@@ -17,7 +17,7 @@ public class StepButton : Button
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && !other.isTrigger)
         {
             stepCount--;
             if (stepCount == 0)
