@@ -10,26 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: Test_Dialogue
+  m_Name: DialogueData
   m_EditorClassIdentifier: Assembly-CSharp::NPCDialogueData
   introLine: You again...
   choices:
-  - choiceText: Who are you?
+  - choiceText: Who am I?
     npcResponses:
-    - Who I am does not matter.
+    - "You are the sum of what you\u2019ve forgotten\u2026 "
     hasBeenChosen: 1
   - choiceText: Where are we?
     npcResponses:
-    - 'Between time some may say. '
-    - 'Others would say we are nowhere. '
+    - Some may say between time.
+    - Others may say nowhere.
     hasBeenChosen: 1
-  - choiceText: Have we met?
+  - choiceText: Who are you?
     npcResponses:
-    - Many times. Yet you never seem to remember.
-    hasBeenChosen: 0
-  - choiceText: Who am I?
-    npcResponses:
-    - 'You are one who keeps searching.  '
-    - 'Your name meant something once, but no longer. '
-    hasBeenChosen: 0
+    - Someone who remembers what you seem to forget.
+    hasBeenChosen: 1
   endLine: The bell tolls for you.

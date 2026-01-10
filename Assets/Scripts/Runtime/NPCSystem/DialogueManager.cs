@@ -18,7 +18,6 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private UIButton choiceButtonPrefab;
     [SerializeField] private TypewriterText typewriter;
     [SerializeField] private CanvasGroup dialogueCanvasGroup;
-    [SerializeField] private CanvasGroup choicesCanvasGroup;
 
     [Header("Animation Settings")]
     [SerializeField] private float fadeSpeed = 1.25f;
@@ -37,8 +36,6 @@ public class DialogueManager : MonoBehaviour
         
         if (dialogueCanvasGroup == null)
             dialogueCanvasGroup = dialoguePanel.GetComponent<CanvasGroup>();
-        if (choicesCanvasGroup == null)
-            choicesCanvasGroup = choicesContainer.GetComponent<CanvasGroup>();
     }
 
     public void StartDialogue(NPCDialogueData dialogue)
@@ -157,7 +154,6 @@ public class DialogueManager : MonoBehaviour
         }
 
         yield return new WaitForSeconds(choicesFadeDelay);
-        yield return StartCoroutine(FadeInChoices());
     }
 
     private IEnumerator FadeOutText()
@@ -174,27 +170,6 @@ public class DialogueManager : MonoBehaviour
         
         npcText.text = "";
         textGroup.alpha = 1f; 
-    }
-
-    private IEnumerator FadeInChoices()
-    {
-        choicesCanvasGroup.alpha = 0f;
-        
-        while (choicesCanvasGroup.alpha < 1f)
-        {
-            choicesCanvasGroup.alpha += Time.deltaTime * fadeSpeed;
-            yield return null;
-        }
-        choicesCanvasGroup.alpha = 1f;
-    }
-
-    private IEnumerator FadeOutChoices()
-    {
-        while (choicesCanvasGroup.alpha > 0f)
-        {
-            choicesCanvasGroup.alpha -= Time.deltaTime * fadeSpeed;
-            yield return null;
-        }
     }
 
     private void SetSpeakerName(string speakerName)
@@ -216,7 +191,7 @@ public class DialogueManager : MonoBehaviour
         button.onClick.AddListener(() =>
         {
             choice.hasBeenChosen = true;
-            StartCoroutine(HandleChoiceSelection(choice.npcResponses));
+            HandleChoiceSelection(choice.npcResponses);
         });
     }
 
@@ -228,7 +203,7 @@ public class DialogueManager : MonoBehaviour
         button.transform.localScale = Vector3.zero;
         StartCoroutine(ScaleInButton(button.transform));
 
-        button.onClick.AddListener(() => StartCoroutine(HandleChoiceSelection(null)));
+        button.onClick.AddListener(() => HandleChoiceSelection(null));
     }
 
     private IEnumerator ScaleInButton(Transform buttonTransform)
@@ -238,6 +213,8 @@ public class DialogueManager : MonoBehaviour
         
         while (elapsed < duration)
         {
+            if (buttonTransform == null) yield break; // Safety check
+            
             float progress = elapsed / duration;
             float scale = Mathf.Lerp(0f, 1f, Mathf.SmoothStep(0f, 1f, progress));
             buttonTransform.localScale = Vector3.one * scale;
@@ -246,13 +223,12 @@ public class DialogueManager : MonoBehaviour
             yield return null;
         }
         
-        buttonTransform.localScale = Vector3.one;
+        if (buttonTransform != null)
+            buttonTransform.localScale = Vector3.one;
     }
 
-    private IEnumerator HandleChoiceSelection(List<string> responses)
+    private void HandleChoiceSelection(List<string> responses)
     {
-        yield return StartCoroutine(FadeOutChoices());
-        
         if (responses == null)
         {
             TriggerEndDialogue();
@@ -292,10 +268,10 @@ public class DialogueManager : MonoBehaviour
 
     private void ClearChoices()
     {
+        StopAllCoroutines();
+        
         foreach (Transform child in choicesContainer)
             Destroy(child.gameObject);
-            
-        choicesCanvasGroup.alpha = 0f;
     }
 
     private IEnumerator FadeOutAndEndDialogue()
@@ -317,6 +293,5 @@ public class DialogueManager : MonoBehaviour
         
         // Reset canvas group alpha for next dialogue
         dialogueCanvasGroup.alpha = 1f;
-        choicesCanvasGroup.alpha = 0f;
     }
 }

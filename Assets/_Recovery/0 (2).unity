@@ -24829,7 +24829,7 @@ Transform:
   m_GameObject: {fileID: 1876234580}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -45.85, y: -1.58, z: 0}
+  m_LocalPosition: {x: -9.3, y: -1.58, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -24847,7 +24847,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c667626c9ea08a4380e5e21242255e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ConfessionBooth
-  promptOffset: {x: 2.93, y: 1, z: 0}
+  promptOffset: {x: -2.69, y: 1, z: 0}
   dialogue: {fileID: 11400000, guid: 54a4811ead272a84e8d86cf61d82c17c, type: 2}
   audioSource: {fileID: 0}
   bellSound: {fileID: 0}
@@ -25233,6 +25233,7 @@ MonoBehaviour:
   choiceButtonPrefab: {fileID: 5111967039364470118, guid: 9aab3190b1b92b84f8305d779765ec1e, type: 3}
   typewriter: {fileID: 268104837}
   dialogueCanvasGroup: {fileID: 0}
+  choicesCanvasGroup: {fileID: 0}
   fadeSpeed: 1.25
   choicesFadeDelay: 0.15
 --- !u!1 &1977277778 stripped
