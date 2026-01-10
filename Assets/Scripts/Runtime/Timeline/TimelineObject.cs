@@ -20,6 +20,8 @@ namespace ThiccTapeman.Timeline
         Rigidbody2D rb;
         Animator animator;
         SpriteRenderer sr;
+        bool hasDeltaYParam;
+        const string DeltaYParam = "DeltaY";
 
         // Live recording (only on the live object)
         readonly List<TimelineState> liveStates = new List<TimelineState>();
@@ -35,6 +37,7 @@ namespace ThiccTapeman.Timeline
             rb = GetComponent<Rigidbody2D>();
             animator = GetComponent<Animator>();
             sr = GetComponentInChildren<SpriteRenderer>();
+            hasDeltaYParam = animator != null && HasAnimatorParameter(animator, DeltaYParam, AnimatorControllerParameterType.Float);
 
             // Only register live objects
             if (!isBranchInstance)
@@ -77,6 +80,14 @@ namespace ThiccTapeman.Timeline
                 spriteFlipX = sr.flipX;
             }
 
+            bool hasDeltaY = false;
+            float deltaY = 0f;
+            if (animator != null && hasDeltaYParam)
+            {
+                hasDeltaY = true;
+                deltaY = animator.GetFloat(DeltaYParam);
+            }
+
             liveStates.Add(new TimelineState(
                 t,
                 rb.position,
@@ -88,7 +99,9 @@ namespace ThiccTapeman.Timeline
                 animNormalizedTime,
                 animLoop,
                 hasSpriteRenderer,
-                spriteFlipX
+                spriteFlipX,
+                hasDeltaY,
+                deltaY
             ));
         }
 
@@ -254,6 +267,17 @@ namespace ThiccTapeman.Timeline
             return list;
         }
 
+        static bool HasAnimatorParameter(Animator anim, string name, AnimatorControllerParameterType type)
+        {
+            if (anim == null) return false;
+            foreach (var p in anim.parameters)
+            {
+                if (p.name == name && p.type == type)
+                    return true;
+            }
+            return false;
+        }
+
         static List<TimelineState> ApplyPauseSegments(
             List<TimelineState> source,
             List<TimelineManager.PauseSegment> pauses)
@@ -349,6 +373,9 @@ namespace ThiccTapeman.Timeline
             if (animator == null) animator = GetComponent<Animator>();
             if (animator != null && s.hasAnimator)
             {
+                if (s.hasDeltaY)
+                    animator.SetFloat(DeltaYParam, s.deltaY);
+
                 float normalized = s.animLoop
                     ? Mathf.Repeat(s.animNormalizedTime, 1f)
                     : Mathf.Clamp01(s.animNormalizedTime);
@@ -385,6 +412,8 @@ namespace ThiccTapeman.Timeline
             public bool animLoop;
             public bool hasSpriteRenderer;
             public bool spriteFlipX;
+            public bool hasDeltaY;
+            public float deltaY;
 
             public TimelineState(
                 float time,
@@ -397,7 +426,9 @@ namespace ThiccTapeman.Timeline
                 float animNormalizedTime,
                 bool animLoop,
                 bool hasSpriteRenderer,
-                bool spriteFlipX)
+                bool spriteFlipX,
+                bool hasDeltaY,
+                float deltaY)
             {
                 this.time = time;
                 position = pos;
@@ -410,6 +441,8 @@ namespace ThiccTapeman.Timeline
                 this.animLoop = animLoop;
                 this.hasSpriteRenderer = hasSpriteRenderer;
                 this.spriteFlipX = spriteFlipX;
+                this.hasDeltaY = hasDeltaY;
+                this.deltaY = deltaY;
             }
 
             public static TimelineState Lerp(TimelineState a, TimelineState b, float u, float time)
@@ -425,7 +458,9 @@ namespace ThiccTapeman.Timeline
                     0f,
                     false,
                     false,
-                    false
+                    false,
+                    false,
+                    0f
                 );
 
                 if (a.hasAnimator && b.hasAnimator)
@@ -481,6 +516,22 @@ namespace ThiccTapeman.Timeline
                 {
                     s.hasSpriteRenderer = true;
                     s.spriteFlipX = b.spriteFlipX;
+                }
+
+                if (a.hasDeltaY && b.hasDeltaY)
+                {
+                    s.hasDeltaY = true;
+                    s.deltaY = Mathf.Lerp(a.deltaY, b.deltaY, u);
+                }
+                else if (a.hasDeltaY)
+                {
+                    s.hasDeltaY = true;
+                    s.deltaY = a.deltaY;
+                }
+                else if (b.hasDeltaY)
+                {
+                    s.hasDeltaY = true;
+                    s.deltaY = b.deltaY;
                 }
 
                 return s;

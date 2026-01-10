@@ -126,6 +126,9 @@ namespace ThiccTapeman.Player.Movement
             // DeltaX: use speed magnitude on X (positive float)
             anim.SetFloat("DeltaX", Mathf.Abs(v.x));
 
+            // DeltaY: signed vertical velocity
+            anim.SetFloat("DeltaY", v.y);
+
             // Ground / wall slide
             anim.SetBool("IsGrounded", isGrounded);
             anim.SetBool("IsWallSliding", !isGrounded && isTouchingWall && wallAllowsSlide);
