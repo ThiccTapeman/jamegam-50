@@ -40,6 +40,7 @@ public class InventoryManager : MonoBehaviour
     private InputManager inputManager;
     private InputItem useAction;
     private InputItem scrollAction;
+    private InputItem[] slotActions;
 
     public int currentSlotIndex = 0;
 
@@ -61,6 +62,12 @@ public class InventoryManager : MonoBehaviour
 
         useAction = inputManager.GetAction("Player", "Interact");
         scrollAction = inputManager.GetAction("Player", "Scroll");
+
+        slotActions = new InputItem[9];
+        for (int i = 0; i < slotActions.Length; i++)
+        {
+            slotActions[i] = inputManager.GetAction("Player", $"Slot{i + 1}");
+        }
     }
 
     private void Update()
@@ -69,6 +76,7 @@ public class InventoryManager : MonoBehaviour
             HandleUseInput();
 
         HandleScrollInput();
+        HandleSlotHotkeys();
     }
 
     private void HandleUseInput()
@@ -81,6 +89,7 @@ public class InventoryManager : MonoBehaviour
 
     private void HandleScrollInput()
     {
+        if (scrollAction == null) return;
         float scrollValue = scrollAction.ReadValue<float>();
         if (scrollValue != 0)
         {
@@ -99,6 +108,24 @@ public class InventoryManager : MonoBehaviour
                 Debug.Log($"Switched to slot {currentSlotIndex} with a: {slots[currentSlotIndex].itemSO?.itemName ?? "Empty"}");
             }
 
+        }
+    }
+
+    private void HandleSlotHotkeys()
+    {
+        if (slotActions == null || slots.Count == 0) return;
+
+        int max = Mathf.Min(slots.Count, slotActions.Length);
+        for (int i = 0; i < max; i++)
+        {
+            var action = slotActions[i];
+            if (action == null) continue;
+            if (!action.GetTriggered(true)) continue;
+
+            currentSlotIndex = i;
+            OnCurrentSlotChanged?.Invoke();
+            Debug.Log($"Switched to slot {currentSlotIndex} with a: {slots[currentSlotIndex].itemSO?.itemName ?? "Empty"}");
+            break;
         }
     }
 

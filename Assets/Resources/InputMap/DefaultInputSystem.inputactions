@@ -61,7 +61,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Previous",
+                    "name": "Slot1",
                     "type": "Button",
                     "id": "2776c80d-3c14-4091-8c56-d04ced07a2b0",
                     "expectedControlType": "",
@@ -70,9 +70,72 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Next",
+                    "name": "Slot2",
                     "type": "Button",
                     "id": "b7230bb6-fc9b-4f52-8b25-f5e19cb2c2ba",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Slot3",
+                    "type": "Button",
+                    "id": "ec8d9b10-03a1-4926-a492-12934e403801",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Slot4",
+                    "type": "Button",
+                    "id": "84c9482e-4bfb-4f20-91a1-d64ccc73bddb",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Slot5",
+                    "type": "Button",
+                    "id": "3a075a26-4f4c-493f-8b98-84373e143722",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Slot6",
+                    "type": "Button",
+                    "id": "43d20bf6-0d22-4fd3-af58-4806f6af26b8",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Slot7",
+                    "type": "Button",
+                    "id": "1383e11e-2684-4a73-8e0b-637fad6b6bb3",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Slot8",
+                    "type": "Button",
+                    "id": "1d415544-7b19-4ede-99a0-f3dbe2858aa9",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Slot9",
+                    "type": "Button",
+                    "id": "a7f8006a-c878-40e9-addb-b0609fa7b221",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -345,18 +408,84 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "Next",
+                    "action": "Slot2",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "e15ca19d-e649-4852-97d5-7fe8ccc44e94",
-                    "path": "<Gamepad>/dpad/right",
+                    "id": "62d3f1f8-a9b1-48ba-8355-6f1679d64240",
+                    "path": "<Keyboard>/3",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Gamepad",
-                    "action": "Next",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Slot3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "406aa342-832e-4013-9ecc-30eed128b603",
+                    "path": "<Keyboard>/4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Slot4",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "656df361-894f-4421-a1d0-078291db9d1e",
+                    "path": "<Keyboard>/5",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Slot5",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b1e781fe-d0a7-4b48-a2b2-b4e05c34bfeb",
+                    "path": "<Keyboard>/6",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Slot6",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d625960b-5f2b-40fc-a92b-a1710b39fa7f",
+                    "path": "<Keyboard>/7",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Slot7",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f5230c15-8981-455a-8227-a659494e3ad1",
+                    "path": "<Keyboard>/8",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Slot8",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cf0dd36f-91fe-4889-99f9-126da4df400a",
+                    "path": "<Keyboard>/9",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Slot9",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -433,18 +562,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "Previous",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "25060bbd-a3a6-476e-8fba-45ae484aad05",
-                    "path": "<Gamepad>/dpad/left",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "Previous",
+                    "action": "Slot1",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
