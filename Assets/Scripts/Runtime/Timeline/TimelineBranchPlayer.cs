@@ -13,6 +13,8 @@ namespace ThiccTapeman.Timeline
         float recordingEndTime;
 
         Rigidbody2D rb;
+        Animator animator;
+        SpriteRenderer sr;
 
         public void Init(List<TimelineObject.TimelineState> branchStates, float spawnBranchTime)
         {
@@ -23,6 +25,8 @@ namespace ThiccTapeman.Timeline
             recordingEndTime = states[^1].time;
 
             rb = GetComponent<Rigidbody2D>();
+            animator = GetComponent<Animator>();
+            sr = GetComponentInChildren<SpriteRenderer>();
 
             Apply(Sample(recordingStartTime));
         }
@@ -71,6 +75,19 @@ namespace ThiccTapeman.Timeline
                 transform.position = s.position;
                 transform.rotation = Quaternion.Euler(0f, 0f, s.rotation);
             }
+
+            if (animator != null && s.hasAnimator)
+            {
+                float normalized = s.animLoop
+                    ? Mathf.Repeat(s.animNormalizedTime, 1f)
+                    : Mathf.Clamp01(s.animNormalizedTime);
+
+                animator.Play(s.animStateHash, 0, normalized);
+                animator.Update(0f);
+            }
+
+            if (sr != null && s.hasSpriteRenderer)
+                sr.flipX = s.spriteFlipX;
         }
     }
 }
