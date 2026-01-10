@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class ConfessionBooth : InteractableObject
 {
-    [SerializeField] private NPCDialogueData dialogue;
+    [SerializeField] private DialogueData dialogue;
     [SerializeField] private string npcName = "Blank";
 
     [Header("Audio")]

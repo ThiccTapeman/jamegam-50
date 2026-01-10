@@ -7,7 +7,7 @@ public class PlayerChoice
     public string choiceText;
 
     [TextArea(2, 5)]
-    public List<string> npcResponses;
+    public List<string> npcResponses = new List<string>();
 
     [HideInInspector]
     public bool hasBeenChosen;
@@ -21,12 +21,12 @@ public class DialogueLine
 }
 
 [CreateAssetMenu(fileName = "DialogueData", menuName = "Scriptable Objects/DialogueData")]
-public class NPCDialogueData : ScriptableObject
+public class DialogueData : ScriptableObject
 {
     [TextArea(2, 5)]
     public string introLine;
 
-    public List<PlayerChoice> choices;
+    public List<PlayerChoice> choices = new List<PlayerChoice>();
     
     [TextArea(2, 5)]
     public string endLine = "The bell tolls for you.";

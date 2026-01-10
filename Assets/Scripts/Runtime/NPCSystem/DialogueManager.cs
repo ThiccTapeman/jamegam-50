@@ -22,7 +22,7 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private float fadeSpeed = 1.25f;
     [SerializeField] private float choicesFadeDelay = 0.15f;
 
-    private NPCDialogueData currentDialogue;
+    private DialogueData currentDialogue;
     private DialogueState state;
     private bool isEndingDialogue;
     private string currentNPCName;
@@ -38,7 +38,7 @@ public class DialogueManager : MonoBehaviour
             dialogueCanvasGroup = dialoguePanel.GetComponent<CanvasGroup>();
     }
 
-    public void StartDialogue(NPCDialogueData dialogue, string npcName = "???")
+    public void StartDialogue(DialogueData dialogue, string npcName = "???")
     {
         currentDialogue = dialogue;
         currentNPCName = npcName;
@@ -46,7 +46,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     
-    private IEnumerator FadeInDialogue(NPCDialogueData dialogue)
+    private IEnumerator FadeInDialogue(DialogueData dialogue)
     {
         dialoguePanel.SetActive(true);
         dialogueCanvasGroup.alpha = 0f;

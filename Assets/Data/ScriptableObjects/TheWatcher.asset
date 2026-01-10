@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: ac14ade2c86324942b7b3490e1266ae8, type: 3}
   m_Name: TheWatcher
   m_EditorClassIdentifier: Assembly-CSharp::NPCDialogueData
   introLine: "You\u2019re late\u2026 or early. It\u2019s difficult to tell with you."
