@@ -15,7 +15,7 @@ public class ResetZone : MonoBehaviour
             return;
         }
 
-        if (!collision.CompareTag("Player")) return;
+        if (!(collision.CompareTag("Player") && collision.isTrigger)) return;
 
         ResetManager.GetInstance().Reset();
     }

@@ -17,8 +17,18 @@ namespace ThiccTapeman.Timeline
         Animator animator;
         SpriteRenderer sr;
         Collider2D[] colliders;
+        bool[] colliderOriginalTriggers;
         bool hasDeltaYParam;
+        bool hasDeltaXParam;
+        bool hasIsGroundedParam;
+        bool hasIsWallSlidingParam;
         const string DeltaYParam = "DeltaY";
+        const string DeltaXParam = "DeltaX";
+        const string IsGroundedParam = "IsGrounded";
+        const string IsWallSlidingParam = "IsWallSliding";
+
+        int levelMask;
+        [SerializeField] float idleVelocityThreshold = 0.05f;
 
         public void Init(List<TimelineObject.TimelineState> branchStates, float spawnBranchTime)
         {
@@ -32,7 +42,19 @@ namespace ThiccTapeman.Timeline
             animator = GetComponent<Animator>();
             sr = GetComponentInChildren<SpriteRenderer>();
             colliders = GetComponentsInChildren<Collider2D>();
+            if (colliders != null && colliders.Length > 0)
+            {
+                colliderOriginalTriggers = new bool[colliders.Length];
+                for (int i = 0; i < colliders.Length; i++)
+                {
+                    colliderOriginalTriggers[i] = colliders[i] != null && colliders[i].isTrigger;
+                }
+            }
             hasDeltaYParam = animator != null && HasAnimatorParameter(animator, DeltaYParam, AnimatorControllerParameterType.Float);
+            hasDeltaXParam = animator != null && HasAnimatorParameter(animator, DeltaXParam, AnimatorControllerParameterType.Float);
+            hasIsGroundedParam = animator != null && HasAnimatorParameter(animator, IsGroundedParam, AnimatorControllerParameterType.Bool);
+            hasIsWallSlidingParam = animator != null && HasAnimatorParameter(animator, IsWallSlidingParam, AnimatorControllerParameterType.Bool);
+            levelMask = LayerMask.GetMask("Level");
 
             Apply(Sample(recordingStartTime));
             isEnded = false;
@@ -132,6 +154,30 @@ namespace ThiccTapeman.Timeline
             rb.linearVelocity = s.velocity;
             rb.angularVelocity = s.angularVelocity;
             isEnded = true;
+            ApplyCollisionState(true);
+        }
+
+        void Update()
+        {
+            if (!isEnded) return;
+            if (rb == null || animator == null) return;
+
+            Vector2 v = rb.linearVelocity;
+            bool grounded = levelMask != 0 && rb.IsTouchingLayers(levelMask);
+
+            if (grounded && Mathf.Abs(v.x) < idleVelocityThreshold && Mathf.Abs(v.y) < idleVelocityThreshold)
+            {
+                v = Vector2.zero;
+            }
+
+            if (hasDeltaXParam)
+                animator.SetFloat(DeltaXParam, Mathf.Abs(v.x));
+            if (hasDeltaYParam)
+                animator.SetFloat(DeltaYParam, v.y);
+            if (hasIsGroundedParam)
+                animator.SetBool(IsGroundedParam, grounded);
+            if (hasIsWallSlidingParam)
+                animator.SetBool(IsWallSlidingParam, false);
         }
 
         void HandlePauseStateChanged(bool isPaused)
@@ -145,7 +191,23 @@ namespace ThiccTapeman.Timeline
             for (int i = 0; i < colliders.Length; i++)
             {
                 var col = colliders[i];
-                if (col != null) col.enabled = enabled;
+                if (col == null) continue;
+
+                col.enabled = true;
+
+                bool originalTrigger = colliderOriginalTriggers != null
+                    && i >= 0
+                    && i < colliderOriginalTriggers.Length
+                    && colliderOriginalTriggers[i];
+
+                if (isEnded || enabled)
+                {
+                    col.isTrigger = originalTrigger;
+                }
+                else
+                {
+                    col.isTrigger = true;
+                }
             }
         }
 

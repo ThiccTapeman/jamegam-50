@@ -21,6 +21,8 @@ public class Door : MonoBehaviour
     [SerializeField] private float slideDistance = 2.0f;  // units
     [SerializeField] private bool useLocalSpace = true;
     [SerializeField] private Vector3 slideDirection = Vector3.up; // direction to open
+    [SerializeField] private AudioSource openingSource;
+    [SerializeField] private SoundManager.Sound openingSound;
 
     private Vector3 closedPos;
     private Vector3 openPos;
@@ -65,6 +67,20 @@ public class Door : MonoBehaviour
     void Update()
     {
         Vector3 target = isOpen ? openPos : closedPos;
+        bool isMoving = Vector3.Distance(useLocalSpace ? transform.localPosition : transform.position, target) > 0.001f;
+
+        if (openingSource != null)
+        {
+            if (isOpen && isMoving)
+            {
+                if (openingSound != null && !openingSource.isPlaying)
+                    SoundManager.PlaySound(openingSound, openingSource);
+            }
+            else if (openingSource.isPlaying)
+            {
+                openingSource.Stop();
+            }
+        }
 
         if (useLocalSpace)
         {
