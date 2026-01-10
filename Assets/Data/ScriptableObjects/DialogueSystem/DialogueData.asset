@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac14ade2c86324942b7b3490e1266ae8, type: 3}
   m_Name: DialogueData
   m_EditorClassIdentifier: Assembly-CSharp::NPCDialogueData
-  introLine: 
-  choices: []
-  endLine: The bell tolls for you.
+  introLine: Hola mi amigo
+  choices:
+  - choiceText: Slay
+    npcResponses:
+    - Yass Queen
+    hasBeenChosen: 0
+  endLine: The bell tolls for you girl.

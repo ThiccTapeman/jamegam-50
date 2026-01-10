@@ -6,6 +6,7 @@ public abstract class Button : MonoBehaviour
 {
     [SerializeField] private AudioSource buttonAudioSource;
     [SerializeField] private SoundManager.SoundVariations buttonPressClip;
+    [SerializeField] private SoundManager.SoundVariations buttonUnPressClip;
     public Action<bool> OnButtonStateChanged;
 
     [SerializeField] private bool isPressed = false;
@@ -28,10 +29,21 @@ public abstract class Button : MonoBehaviour
 
     private void HandleButtonStateChanged(bool pressed)
     {
-        if (buttonAudioSource != null && buttonPressClip != null)
+        if (pressed)
         {
-            buttonPressClip.PlaySound(buttonAudioSource);
+            if (buttonAudioSource != null && buttonPressClip != null)
+            {
+                buttonPressClip.PlaySound(buttonAudioSource);
+            }
         }
+        else
+        {
+            if (buttonAudioSource != null && buttonUnPressClip != null)
+            {
+                buttonUnPressClip.PlaySound(buttonAudioSource);
+            }
+        }
+
     }
 
 }

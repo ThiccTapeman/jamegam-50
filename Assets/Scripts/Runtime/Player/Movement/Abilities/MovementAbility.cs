@@ -39,6 +39,10 @@ namespace ThiccTapeman.Player.Movement
         [SerializeField] private float wallCastExtra = 0.02f;
         [SerializeField] private int wallCastHits = 4;
 
+        [Header("Jump Feel")]
+        [SerializeField] private float fallGravityMultiplier = 3.5f;
+        [SerializeField] private float lowJumpGravityMultiplier = 3f;
+
         [Header("Sounds")]
         [SerializeField] private SoundManager.SoundVariations steps; // each foot placement should play one step
         [SerializeField] private SoundManager.SoundVariations jumps;
@@ -121,6 +125,7 @@ namespace ThiccTapeman.Player.Movement
             ApplyWallSlideClamp();
 
             TryConsumeBufferedJump();
+            ApplyExtraGravity();
             UpdateAnimatorAndFlip();
             UpdateFootsteps();
         }
@@ -333,6 +338,24 @@ namespace ThiccTapeman.Player.Movement
 
                 wallCheckDisableUntil = Time.time + wallCheckDisableTime;
                 jumpPressedTime = -Mathf.Infinity; // consume
+            }
+        }
+
+        private void ApplyExtraGravity()
+        {
+            if (rb == null) return;
+            if (isGrounded) return;
+
+            Vector2 v = rb.linearVelocity;
+            float jumpHeld = jumpAction != null ? jumpAction.ReadValue<float>() : 0f;
+
+            if (v.y < 0f)
+            {
+                rb.linearVelocity = v + Vector2.up * Physics2D.gravity.y * (fallGravityMultiplier - 1f) * Time.fixedDeltaTime;
+            }
+            else if (v.y > 0f && jumpHeld <= 0.01f)
+            {
+                rb.linearVelocity = v + Vector2.up * Physics2D.gravity.y * (lowJumpGravityMultiplier - 1f) * Time.fixedDeltaTime;
             }
         }
 

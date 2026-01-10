@@ -42,7 +42,12 @@ namespace ThiccTapeman.Timeline
             animator = GetComponent<Animator>();
             sr = GetComponentInChildren<SpriteRenderer>();
             colliders = GetComponentsInChildren<Collider2D>();
-            if (colliders != null && colliders.Length > 0)
+            var colliderState = GetComponent<BranchColliderState>();
+            if (colliderState != null && colliderState.originalIsTrigger != null)
+            {
+                colliderOriginalTriggers = colliderState.originalIsTrigger;
+            }
+            else if (colliders != null && colliders.Length > 0)
             {
                 colliderOriginalTriggers = new bool[colliders.Length];
                 for (int i = 0; i < colliders.Length; i++)

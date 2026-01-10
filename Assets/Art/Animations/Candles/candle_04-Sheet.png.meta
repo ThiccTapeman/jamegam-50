@@ -131,12 +131,12 @@ TextureImporter:
       name: candle_04-Sheet_0
       rect:
         serializedVersion: 2
-        x: 19
+        x: 0
         y: 0
-        width: 10
-        height: 24
+        width: 16
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -153,12 +153,12 @@ TextureImporter:
       name: candle_04-Sheet_1
       rect:
         serializedVersion: 2
-        x: 35
+        x: 16
         y: 0
-        width: 10
-        height: 20
+        width: 16
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -175,12 +175,12 @@ TextureImporter:
       name: candle_04-Sheet_2
       rect:
         serializedVersion: 2
-        x: 39
-        y: 19
-        width: 7
-        height: 10
+        x: 32
+        y: 0
+        width: 16
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -197,12 +197,12 @@ TextureImporter:
       name: candle_04-Sheet_3
       rect:
         serializedVersion: 2
-        x: 51
+        x: 48
         y: 0
-        width: 10
-        height: 31
+        width: 16
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -219,12 +219,12 @@ TextureImporter:
       name: candle_04-Sheet_4
       rect:
         serializedVersion: 2
-        x: 67
+        x: 64
         y: 0
-        width: 10
-        height: 22
+        width: 16
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -237,33 +237,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: candle_04-Sheet_5
-      rect:
-        serializedVersion: 2
-        x: 3
-        y: 0
-        width: 10
-        height: 15
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b942da12ef3910fd0800000000000000
-      internalID: -2377456408578939749
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: b33b5674411f8f54bb7898cf3e045094
     internalID: 0
     vertices: []
     indices: 
@@ -271,14 +249,15 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":16.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       candle_04-Sheet_0: -627211942213126145
       candle_04-Sheet_1: 837166020749976310
       candle_04-Sheet_2: -4575502436964090923
       candle_04-Sheet_3: -6003296810500501347
       candle_04-Sheet_4: 4724623362958260749
-      candle_04-Sheet_5: -2377456408578939749
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
