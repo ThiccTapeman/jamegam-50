@@ -18,6 +18,8 @@ namespace ThiccTapeman.Timeline
         public bool IsBranchInstance => isBranchInstance;
 
         Rigidbody2D rb;
+        Animator animator;
+        SpriteRenderer sr;
 
         // Live recording (only on the live object)
         readonly List<TimelineState> liveStates = new List<TimelineState>();
@@ -31,6 +33,8 @@ namespace ThiccTapeman.Timeline
         void Awake()
         {
             rb = GetComponent<Rigidbody2D>();
+            animator = GetComponent<Animator>();
+            sr = GetComponentInChildren<SpriteRenderer>();
 
             // Only register live objects
             if (!isBranchInstance)
@@ -50,12 +54,41 @@ namespace ThiccTapeman.Timeline
             if (isBranchInstance) return;
             if (rb == null) return;
 
+            bool hasAnimator = false;
+            int animStateHash = 0;
+            float animNormalizedTime = 0f;
+            bool animLoop = false;
+
+            if (animator != null)
+            {
+                AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
+                hasAnimator = true;
+                animStateHash = state.fullPathHash;
+                animNormalizedTime = state.normalizedTime;
+                animLoop = state.loop || animNormalizedTime > 1f;
+            }
+
+            bool hasSpriteRenderer = false;
+            bool spriteFlipX = false;
+
+            if (sr != null)
+            {
+                hasSpriteRenderer = true;
+                spriteFlipX = sr.flipX;
+            }
+
             liveStates.Add(new TimelineState(
                 t,
                 rb.position,
                 rb.rotation,
                 rb.linearVelocity,
-                rb.angularVelocity
+                rb.angularVelocity,
+                hasAnimator,
+                animStateHash,
+                animNormalizedTime,
+                animLoop,
+                hasSpriteRenderer,
+                spriteFlipX
             ));
         }
 
@@ -312,6 +345,21 @@ namespace ThiccTapeman.Timeline
             rb.rotation = s.rotation;
             rb.linearVelocity = s.velocity;
             rb.angularVelocity = s.angularVelocity;
+
+            if (animator == null) animator = GetComponent<Animator>();
+            if (animator != null && s.hasAnimator)
+            {
+                float normalized = s.animLoop
+                    ? Mathf.Repeat(s.animNormalizedTime, 1f)
+                    : Mathf.Clamp01(s.animNormalizedTime);
+
+                animator.Play(s.animStateHash, 0, normalized);
+                animator.Update(0f);
+            }
+
+            if (sr == null) sr = GetComponentInChildren<SpriteRenderer>();
+            if (sr != null && s.hasSpriteRenderer)
+                sr.flipX = s.spriteFlipX;
         }
 
         // ---------------- Data types ----------------
@@ -331,25 +379,111 @@ namespace ThiccTapeman.Timeline
             public float rotation;
             public Vector2 velocity;
             public float angularVelocity;
+            public bool hasAnimator;
+            public int animStateHash;
+            public float animNormalizedTime;
+            public bool animLoop;
+            public bool hasSpriteRenderer;
+            public bool spriteFlipX;
 
-            public TimelineState(float time, Vector2 pos, float rot, Vector2 vel, float angVel)
+            public TimelineState(
+                float time,
+                Vector2 pos,
+                float rot,
+                Vector2 vel,
+                float angVel,
+                bool hasAnimator,
+                int animStateHash,
+                float animNormalizedTime,
+                bool animLoop,
+                bool hasSpriteRenderer,
+                bool spriteFlipX)
             {
                 this.time = time;
                 position = pos;
                 rotation = rot;
                 velocity = vel;
                 angularVelocity = angVel;
+                this.hasAnimator = hasAnimator;
+                this.animStateHash = animStateHash;
+                this.animNormalizedTime = animNormalizedTime;
+                this.animLoop = animLoop;
+                this.hasSpriteRenderer = hasSpriteRenderer;
+                this.spriteFlipX = spriteFlipX;
             }
 
             public static TimelineState Lerp(TimelineState a, TimelineState b, float u, float time)
             {
-                return new TimelineState(
+                TimelineState s = new TimelineState(
                     time,
                     Vector2.Lerp(a.position, b.position, u),
                     Mathf.LerpAngle(a.rotation, b.rotation, u),
                     Vector2.Lerp(a.velocity, b.velocity, u),
-                    Mathf.Lerp(a.angularVelocity, b.angularVelocity, u)
+                    Mathf.Lerp(a.angularVelocity, b.angularVelocity, u),
+                    false,
+                    0,
+                    0f,
+                    false,
+                    false,
+                    false
                 );
+
+                if (a.hasAnimator && b.hasAnimator)
+                {
+                    if (a.animStateHash == b.animStateHash)
+                    {
+                        s.hasAnimator = true;
+                        s.animStateHash = a.animStateHash;
+                        s.animLoop = a.animLoop;
+                        s.animNormalizedTime = Mathf.Lerp(a.animNormalizedTime, b.animNormalizedTime, u);
+                    }
+                    else if (u < 0.5f)
+                    {
+                        s.hasAnimator = true;
+                        s.animStateHash = a.animStateHash;
+                        s.animNormalizedTime = a.animNormalizedTime;
+                        s.animLoop = a.animLoop;
+                    }
+                    else
+                    {
+                        s.hasAnimator = true;
+                        s.animStateHash = b.animStateHash;
+                        s.animNormalizedTime = b.animNormalizedTime;
+                        s.animLoop = b.animLoop;
+                    }
+                }
+                else if (a.hasAnimator)
+                {
+                    s.hasAnimator = true;
+                    s.animStateHash = a.animStateHash;
+                    s.animNormalizedTime = a.animNormalizedTime;
+                    s.animLoop = a.animLoop;
+                }
+                else if (b.hasAnimator)
+                {
+                    s.hasAnimator = true;
+                    s.animStateHash = b.animStateHash;
+                    s.animNormalizedTime = b.animNormalizedTime;
+                    s.animLoop = b.animLoop;
+                }
+
+                if (a.hasSpriteRenderer && b.hasSpriteRenderer)
+                {
+                    s.hasSpriteRenderer = true;
+                    s.spriteFlipX = (u < 0.5f) ? a.spriteFlipX : b.spriteFlipX;
+                }
+                else if (a.hasSpriteRenderer)
+                {
+                    s.hasSpriteRenderer = true;
+                    s.spriteFlipX = a.spriteFlipX;
+                }
+                else if (b.hasSpriteRenderer)
+                {
+                    s.hasSpriteRenderer = true;
+                    s.spriteFlipX = b.spriteFlipX;
+                }
+
+                return s;
             }
         }
     }
