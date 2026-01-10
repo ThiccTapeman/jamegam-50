@@ -46,8 +46,10 @@ namespace ThiccTapeman.Timeline
 
         void OnDestroy()
         {
-            if (TimelineManager.GetInstance() != null && !isBranchInstance)
-                TimelineManager.GetInstance().Unregister(this);
+            if (isBranchInstance) return;
+
+            var manager = TimelineManager.TryGetInstance();
+            if (manager != null) manager.Unregister(this);
         }
 
         // ---------------- Live recording ----------------

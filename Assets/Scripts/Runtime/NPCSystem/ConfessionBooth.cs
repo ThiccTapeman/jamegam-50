@@ -1,16 +1,14 @@
 using UnityEngine;
 
-public class ConfessionBooth : MonoBehaviour
+public class ConfessionBooth : InteractableObject
 {
     [SerializeField] private NPCDialogueData dialogue;
-    
+
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip bellSound;
 
-    private bool playerInRange;
-
-    private void Awake()
+    private void Start()
     {
         // Ensure audio source exists
         if (audioSource == null)
@@ -19,24 +17,9 @@ public class ConfessionBooth : MonoBehaviour
             audioSource = gameObject.AddComponent<AudioSource>();
     }
 
-    private void Update()
+    public override void Interact(GameObject interactor)
     {
-        if (playerInRange && Input.GetKeyDown(KeyCode.E))
-        {
-            DialogueManager.Instance.StartDialogue(dialogue);
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Player"))
-            playerInRange = true;
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Player"))
-            playerInRange = false;
+        DialogueManager.Instance.StartDialogue(dialogue);
     }
 
     public void PlayBellSound()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,12 +7,22 @@ namespace ThiccTapeman.Timeline
     public sealed class TimelineManager : MonoBehaviour
     {
         private static TimelineManager instance;
+        private static bool isShuttingDown;
+
+        [Header("Startup")]
+        [Min(0f)] public float startDelaySeconds = 0f;
+        float startDelayRemaining;
+
+        public bool IsStarting => startDelayRemaining > 0f;
+        public bool IsRunning => !IsStarting;
 
         // Ensure singleton instance
         public static TimelineManager GetInstance()
         {
             if (instance == null)
             {
+                if (isShuttingDown) return null;
+
                 instance = FindObjectOfType<TimelineManager>();
                 if (instance == null)
                 {
@@ -19,6 +30,11 @@ namespace ThiccTapeman.Timeline
                     instance = obj.AddComponent<TimelineManager>();
                 }
             }
+            return instance;
+        }
+
+        public static TimelineManager TryGetInstance()
+        {
             return instance;
         }
 
@@ -37,6 +53,7 @@ namespace ThiccTapeman.Timeline
         public float BranchTime { get; private set; }
 
         public bool IsTimePaused { get; private set; }
+        public event Action<bool> OnPauseStateChanged;
 
         readonly List<TimelineObject> objects = new List<TimelineObject>();
         readonly List<PauseSegment> pauseSegments = new List<PauseSegment>();
@@ -65,9 +82,35 @@ namespace ThiccTapeman.Timeline
             instance = this;
         }
 
+        void Start()
+        {
+            startDelayRemaining = Mathf.Max(0f, startDelaySeconds);
+        }
+
+        void OnApplicationQuit()
+        {
+            isShuttingDown = true;
+        }
+
+        void OnDestroy()
+        {
+            if (instance == this)
+            {
+                isShuttingDown = true;
+                instance = null;
+            }
+        }
+
         void Update()
         {
             float dt = Time.deltaTime;
+
+            if (startDelayRemaining > 0f)
+            {
+                startDelayRemaining -= dt;
+                if (startDelayRemaining < 0f) startDelayRemaining = 0f;
+                return;
+            }
 
             // Live world keeps moving, so recording time keeps advancing always
             TimeNow += dt;
@@ -116,6 +159,7 @@ namespace ThiccTapeman.Timeline
             if (IsTimePaused) return;
             IsTimePaused = true;
             pauseStartTime = TimeNow;
+            OnPauseStateChanged?.Invoke(true);
         }
 
         public void ResumeTime()
@@ -127,6 +171,7 @@ namespace ThiccTapeman.Timeline
                 pauseSegments.Add(new PauseSegment(pauseStartTime, TimeNow));
                 pauseStartTime = -1f;
             }
+            OnPauseStateChanged?.Invoke(false);
         }
 
         public void SetTimelineReferencePoint()

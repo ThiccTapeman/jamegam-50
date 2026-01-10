@@ -34,6 +34,7 @@ public class InventoryManager : MonoBehaviour
     public List<Slot> slots = new List<Slot>();
     [SerializeField] private int maxSlots = 5;
     [SerializeField] private float useCooldown = 1f;
+    [SerializeField] public bool handleUseInput = true;
 
     // Privates
     private InputManager inputManager;
@@ -64,18 +65,18 @@ public class InventoryManager : MonoBehaviour
 
     private void Update()
     {
-        HandleUseInput();
+        if (handleUseInput)
+            HandleUseInput();
+
         HandleScrollInput();
     }
 
     private void HandleUseInput()
     {
-        if (useAction.ReadValue<float>() > 0.5f && (Time.time - lastUseTime >= useCooldown || lastUseTime == -1))
-        {
-            lastUseTime = Time.time;
+        if (useAction == null) return;
+        if (useAction.ReadValue<float>() <= 0.5f) return;
 
-            UseCurrentItem();
-        }
+        TryUseCurrentItem();
     }
 
     private void HandleScrollInput()
@@ -101,9 +102,9 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    private void UseCurrentItem()
+    private bool UseCurrentItem()
     {
-        if (slots.Count == 0) return;
+        if (slots.Count == 0) return false;
 
         Slot currentSlot = slots[currentSlotIndex];
         bool used = currentSlot.TryUse();
@@ -117,6 +118,21 @@ public class InventoryManager : MonoBehaviour
         {
             Debug.Log($"Item in slot {currentSlotIndex} is on cooldown or out of stock.");
         }
+
+        return used;
+    }
+
+    public bool TryUseCurrentItem()
+    {
+        if (Time.time - lastUseTime < useCooldown && lastUseTime != -1) return false;
+
+        lastUseTime = Time.time;
+        return UseCurrentItem();
+    }
+
+    public void SetHandleInput(bool enabled)
+    {
+        handleUseInput = enabled;
     }
 
 

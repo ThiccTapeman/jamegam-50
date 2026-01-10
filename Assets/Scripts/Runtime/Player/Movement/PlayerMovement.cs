@@ -1,5 +1,6 @@
 using UnityEngine;
 using ThiccTapeman.Input;
+using ThiccTapeman.Timeline;
 using System.Collections.Generic;
 
 namespace ThiccTapeman.Player.Movement
@@ -83,8 +84,16 @@ namespace ThiccTapeman.Player.Movement
 
 
 
+        bool IsMovementAllowed()
+        {
+            var manager = TimelineManager.TryGetInstance();
+            return manager == null || manager.IsRunning;
+        }
+
         private void Update()
         {
+            if (!IsMovementAllowed()) return;
+
             foreach (var ability in abilities)
             {
                 ability.UpdateAbility();
@@ -93,6 +102,8 @@ namespace ThiccTapeman.Player.Movement
 
         private void FixedUpdate()
         {
+            if (!IsMovementAllowed()) return;
+
             foreach (var ability in abilities)
             {
                 ability.FixedUpdateAbility();

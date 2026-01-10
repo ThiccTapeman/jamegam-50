@@ -4,8 +4,6 @@ using ThiccTapeman.Player.Reset;
 
 public class ResetZone : MonoBehaviour
 {
-    [SerializeField] float rewindSeconds = 1000f;
-
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision == null) return;

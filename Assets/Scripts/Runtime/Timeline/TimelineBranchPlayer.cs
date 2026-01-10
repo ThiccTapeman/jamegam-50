@@ -11,10 +11,12 @@ namespace ThiccTapeman.Timeline
         float spawnBranchTime;
         float recordingStartTime;
         float recordingEndTime;
+        bool isEnded;
 
         Rigidbody2D rb;
         Animator animator;
         SpriteRenderer sr;
+        Collider2D[] colliders;
         bool hasDeltaYParam;
         const string DeltaYParam = "DeltaY";
 
@@ -29,14 +31,28 @@ namespace ThiccTapeman.Timeline
             rb = GetComponent<Rigidbody2D>();
             animator = GetComponent<Animator>();
             sr = GetComponentInChildren<SpriteRenderer>();
+            colliders = GetComponentsInChildren<Collider2D>();
             hasDeltaYParam = animator != null && HasAnimatorParameter(animator, DeltaYParam, AnimatorControllerParameterType.Float);
 
             Apply(Sample(recordingStartTime));
+            isEnded = false;
+
+            var manager = TimelineManager.TryGetInstance();
+            if (manager != null)
+            {
+                manager.OnPauseStateChanged += HandlePauseStateChanged;
+                ApplyCollisionState(manager.IsTimePaused);
+            }
+            else
+            {
+                ApplyCollisionState(false);
+            }
         }
 
         public void Tick(float branchTime)
         {
             if (states == null || states.Count < 2) return;
+            if (isEnded) return;
 
             // Plays from beginning immediately when spawned:
             // target = (branchTime - spawnBranchTime) + recordingStartTime
@@ -44,6 +60,14 @@ namespace ThiccTapeman.Timeline
 
             // clamp at end
             target = Mathf.Clamp(target, recordingStartTime, recordingEndTime);
+
+            if (target >= recordingEndTime)
+            {
+                var last = Sample(recordingEndTime);
+                Apply(last);
+                EndPlayback(last);
+                return;
+            }
 
             Apply(Sample(target));
         }
@@ -94,6 +118,42 @@ namespace ThiccTapeman.Timeline
 
             if (sr != null && s.hasSpriteRenderer)
                 sr.flipX = s.spriteFlipX;
+        }
+
+        void EndPlayback(TimelineObject.TimelineState s)
+        {
+            if (rb == null)
+            {
+                isEnded = true;
+                return;
+            }
+
+            rb.bodyType = RigidbodyType2D.Dynamic;
+            rb.linearVelocity = s.velocity;
+            rb.angularVelocity = s.angularVelocity;
+            isEnded = true;
+        }
+
+        void HandlePauseStateChanged(bool isPaused)
+        {
+            ApplyCollisionState(isPaused);
+        }
+
+        void ApplyCollisionState(bool enabled)
+        {
+            if (colliders == null) return;
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                var col = colliders[i];
+                if (col != null) col.enabled = enabled;
+            }
+        }
+
+        void OnDestroy()
+        {
+            var manager = TimelineManager.TryGetInstance();
+            if (manager != null)
+                manager.OnPauseStateChanged -= HandlePauseStateChanged;
         }
 
         static bool HasAnimatorParameter(Animator anim, string name, AnimatorControllerParameterType type)
