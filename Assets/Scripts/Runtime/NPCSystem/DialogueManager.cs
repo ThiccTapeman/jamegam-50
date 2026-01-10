@@ -8,6 +8,7 @@ using ThiccTapeman.Input;
 public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance;
+    public static bool IsDialogueActive { get; private set; }
 
     [Header("UI")]
     [SerializeField] private GameObject dialoguePanel;
@@ -42,6 +43,7 @@ public class DialogueManager : MonoBehaviour
     {
         currentDialogue = dialogue;
         currentNPCName = npcName;
+        IsDialogueActive = true;
         StartCoroutine(FadeInDialogue(dialogue));
     }
 
@@ -292,6 +294,7 @@ public class DialogueManager : MonoBehaviour
         currentDialogue = null;
         currentNPCName = null;
         isEndingDialogue = false;
+        IsDialogueActive = false;
         
         // Reset canvas group alpha for next dialogue
         dialogueCanvasGroup.alpha = 1f;

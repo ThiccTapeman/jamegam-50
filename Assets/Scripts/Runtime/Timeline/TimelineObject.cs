@@ -220,6 +220,17 @@ namespace ThiccTapeman.Timeline
 
                 GameObject prefab = branchPrefabOverride != null ? branchPrefabOverride : gameObject;
                 GameObject g = Instantiate(prefab, transform.position, transform.rotation);
+                g.tag = "PlayerGhost";
+
+                var gColliders = g.GetComponentsInChildren<Collider2D>();
+                var colliderState = g.GetComponent<BranchColliderState>();
+                if (colliderState == null) colliderState = g.AddComponent<BranchColliderState>();
+                colliderState.Capture(gColliders);
+                for (int c = 0; c < gColliders.Length; c++)
+                {
+                    if (gColliders[c] != null)
+                        gColliders[c].isTrigger = true;
+                }
 
                 // Mark as branch instance so it doesn't register/record
                 var obj = g.GetComponent<TimelineObject>();

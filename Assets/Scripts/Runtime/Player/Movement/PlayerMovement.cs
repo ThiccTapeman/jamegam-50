@@ -87,7 +87,9 @@ namespace ThiccTapeman.Player.Movement
         bool IsMovementAllowed()
         {
             var manager = TimelineManager.TryGetInstance();
-            return manager == null || manager.IsRunning;
+            if (manager != null && !manager.IsRunning) return false;
+            if (DialogueManager.IsDialogueActive) return false;
+            return true;
         }
 
         private void Update()
