@@ -29,14 +29,14 @@ MonoBehaviour:
   wallCheckDistance: 0.07
   wallSlideSpeed: 2
   wallJumpSpeed: 8
-  wallJumpUpBoost: 1.5
+  wallJumpUpBoost: 4
   wallCheckDisableTime: 0.2
   raycastInset: 0.05
   wallCastExtra: 0
   wallCastHits: 4
   normalJumpGravityMultiplier: 1.5
   shortJumpGravityMultiplier: 3
-  fallGravityMultiplier: 3
+  fallGravityMultiplier: 2
   steps:
     mainClip: {fileID: 0}
     loop: 0
