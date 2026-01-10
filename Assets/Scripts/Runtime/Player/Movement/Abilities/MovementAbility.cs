@@ -30,6 +30,7 @@ namespace ThiccTapeman.Player.Movement
         [SerializeField] private float wallCheckDistance = 0.2f;
         [SerializeField] private float wallSlideSpeed = 2f;
         [SerializeField] private float wallJumpSpeed = 7f;
+        [SerializeField] private float wallJumpUpBoost = 1.5f;
         [SerializeField] private float wallCheckDisableTime = 0.2f;
 
         [Header("Ray / Cast Insets")]
@@ -40,8 +41,9 @@ namespace ThiccTapeman.Player.Movement
         [SerializeField] private int wallCastHits = 4;
 
         [Header("Jump Feel")]
-        [SerializeField] private float fallGravityMultiplier = 3.5f;
-        [SerializeField] private float lowJumpGravityMultiplier = 3f;
+        [SerializeField] private float normalJumpGravityMultiplier = 1.5f;
+        [SerializeField] private float shortJumpGravityMultiplier = 2f;
+        [SerializeField] private float fallGravityMultiplier = 2.5f;
 
         [Header("Sounds")]
         [SerializeField] private SoundManager.SoundVariations steps; // each foot placement should play one step
@@ -314,7 +316,9 @@ namespace ThiccTapeman.Player.Movement
             if (isTouchingWall && !isGrounded && wallDirection != 0 && wallAllowsJump)
             {
                 Vector2 dir = new Vector2(-wallDirection, 1f).normalized;
-                rb.linearVelocity = dir * wallJumpSpeed;
+                Vector2 jumpVel = dir * wallJumpSpeed;
+                jumpVel.y += wallJumpUpBoost;
+                rb.linearVelocity = jumpVel;
 
                 anim?.SetTrigger("Jump"); // Trigger animator
                 if (jumps != null && soundSource != null)
@@ -348,15 +352,19 @@ namespace ThiccTapeman.Player.Movement
 
             Vector2 v = rb.linearVelocity;
             float jumpHeld = jumpAction != null ? jumpAction.ReadValue<float>() : 0f;
+            float extra = normalJumpGravityMultiplier;
 
             if (v.y < 0f)
             {
-                rb.linearVelocity = v + Vector2.up * Physics2D.gravity.y * (fallGravityMultiplier - 1f) * Time.fixedDeltaTime;
+                extra += fallGravityMultiplier;
             }
             else if (v.y > 0f && jumpHeld <= 0.01f)
             {
-                rb.linearVelocity = v + Vector2.up * Physics2D.gravity.y * (lowJumpGravityMultiplier - 1f) * Time.fixedDeltaTime;
+                extra += shortJumpGravityMultiplier;
             }
+
+            if (extra <= 0f) return;
+            rb.linearVelocity = v + Vector2.up * Physics2D.gravity.y * extra * Time.fixedDeltaTime;
         }
 
 

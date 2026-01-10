@@ -17,7 +17,7 @@ MonoBehaviour:
   moveActionName: Move
   jumpActionName: Jump
   movementSpeed: 6
-  jumpSpeed: 10
+  jumpSpeed: 16
   groundAccel: 70
   groundDecel: 30
   airAccel: 15
@@ -29,7 +29,22 @@ MonoBehaviour:
   wallCheckDistance: 0.07
   wallSlideSpeed: 2
   wallJumpSpeed: 8
+  wallJumpUpBoost: 1.5
   wallCheckDisableTime: 0.2
   raycastInset: 0.05
   wallCastExtra: 0
   wallCastHits: 4
+  normalJumpGravityMultiplier: 1.5
+  shortJumpGravityMultiplier: 3
+  fallGravityMultiplier: 3
+  steps:
+    mainClip: {fileID: 0}
+    loop: 0
+    variations: []
+  jumps:
+    mainClip: {fileID: 0}
+    loop: 0
+    variations: []
+  stepInterval: 0.35
+  stepSpeedThreshold: 0.1
+  soundAudioSourceIndex: 0

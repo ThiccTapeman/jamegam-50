@@ -17,5 +17,11 @@ MonoBehaviour:
   dashImpulse: 9.2
   minDashSpeed: 8
   dashCooldown: 1
+  dashLockSeconds: 0.35
+  dashes:
+    mainClip: {fileID: 0}
+    loop: 0
+    variations: []
+  dashAudioSourceIndex: 1
   dashActionName: Dash
   moveActionName: Move

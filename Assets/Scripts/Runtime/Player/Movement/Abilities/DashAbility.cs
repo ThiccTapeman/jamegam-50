@@ -10,6 +10,7 @@ namespace ThiccTapeman.Player.Movement
         public float dashImpulse = 12f;          // impulse amount (tune)
         public float minDashSpeed = 8f;          // guarantees movement even with high mass/drag
         public float dashCooldown = 0.35f;
+        public float dashLockSeconds = 0.12f;
 
         [SerializeField] private SoundManager.SoundVariations dashes;
         [SerializeField] private int dashAudioSourceIndex = 1;
@@ -24,6 +25,9 @@ namespace ThiccTapeman.Player.Movement
         private float lastDashTime = -Mathf.Infinity;
         private bool dashQueued;
         private Vector2 queuedDir = Vector2.right;
+        private float dashLockUntil = -Mathf.Infinity;
+        private float cachedGravityScale = 1f;
+        private bool isDashLocked;
 
         private Animator anim;
         private SpriteRenderer sr;
@@ -71,14 +75,26 @@ namespace ThiccTapeman.Player.Movement
 
         public override void FixedUpdateAbility()
         {
-            if (!dashQueued || rb == null) return;
+            if (rb == null) return;
+
+            if (isDashLocked)
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
+                if (Time.time >= dashLockUntil)
+                {
+                    rb.gravityScale = cachedGravityScale;
+                    isDashLocked = false;
+                }
+            }
+
+            if (!dashQueued) return;
 
             // Keep current vertical velocity, dash horizontally/diagonally
             Vector2 v = rb.linearVelocity;
 
             // Guarantee a dash speed (consistent feel)
             Vector2 dashVel = queuedDir * minDashSpeed;
-            rb.linearVelocity = new Vector2(dashVel.x, v.y);
+            rb.linearVelocity = new Vector2(dashVel.x, 0f);
 
             // Add impulse on top (nice punch)
             rb.AddForce(queuedDir * dashImpulse, ForceMode2D.Impulse);
@@ -89,6 +105,14 @@ namespace ThiccTapeman.Player.Movement
 
             if (dashes != null && dashSource != null)
                 SoundManager.PlaySound(dashes, dashSource);
+
+            if (dashLockSeconds > 0f)
+            {
+                cachedGravityScale = rb.gravityScale;
+                rb.gravityScale = 0f;
+                isDashLocked = true;
+                dashLockUntil = Time.time + dashLockSeconds;
+            }
 
             lastDashTime = Time.time;
             dashQueued = false;
