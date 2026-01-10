@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using ThiccTapeman.Player.Reset;
 
 public abstract class Button : MonoBehaviour
 {
@@ -9,9 +10,20 @@ public abstract class Button : MonoBehaviour
 
     [SerializeField] private bool isPressed = false;
 
+    private ResetManager resetManager;
+    private bool isPressedByDefault = false;
     private void Awake()
     {
         OnButtonStateChanged += HandleButtonStateChanged;
+        isPressedByDefault = isPressed;
+        resetManager = ResetManager.GetInstance();
+        if (resetManager != null)
+            resetManager.OnReset += OnReset;
+    }
+    private void OnReset()
+    {
+        // Reset button to released state
+        isPressed = isPressedByDefault;
     }
 
     private void HandleButtonStateChanged(bool pressed)

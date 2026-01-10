@@ -129,6 +129,26 @@ namespace ThiccTapeman.Timeline
             }
         }
 
+        public void SetTimelineReferencePoint()
+        {
+            TimeNow = 0f;
+            BranchTime = 0f;
+            recordTimer = 0f;
+
+            IsTimePaused = false;
+            pauseSegments.Clear();
+            pauseStartTime = -1f;
+
+            for (int i = 0; i < objects.Count; i++)
+            {
+                var obj = objects[i];
+                if (obj == null) continue;
+
+                obj.ResetTimelineState();
+                obj.RecordState(TimeNow);
+            }
+        }
+
         // --- Rewind ---
 
         public void Rewind(float seconds)
