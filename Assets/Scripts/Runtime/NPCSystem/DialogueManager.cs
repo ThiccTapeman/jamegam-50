@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using TMPro;
 using UIButton = UnityEngine.UI.Button; 
@@ -27,6 +26,7 @@ public class DialogueManager : MonoBehaviour
     private NPCDialogueData currentDialogue;
     private DialogueState state;
     private bool isEndingDialogue;
+    private string currentNPCName;
 
     private Queue<string> npcLineQueue = new Queue<string>();
 
@@ -41,9 +41,10 @@ public class DialogueManager : MonoBehaviour
             choicesCanvasGroup = choicesContainer.GetComponent<CanvasGroup>();
     }
 
-    public void StartDialogue(NPCDialogueData dialogue)
+    public void StartDialogue(NPCDialogueData dialogue, string npcName = "???")
     {
         currentDialogue = dialogue;
+        currentNPCName = npcName;
         StartCoroutine(FadeInDialogue(dialogue));
     }
 
@@ -64,7 +65,7 @@ public class DialogueManager : MonoBehaviour
             }
         }
 
-        SetSpeakerName("???");
+        SetSpeakerName(currentNPCName);
 
         while (dialogueCanvasGroup.alpha < 1f)
         {
@@ -102,7 +103,7 @@ public class DialogueManager : MonoBehaviour
         {
             if (npcLineQueue.Count > 0)
             {
-                SetSpeakerName("???");
+                SetSpeakerName(currentNPCName);
                 typewriter.TypeText(npcLineQueue.Dequeue());
             }
             else
@@ -273,7 +274,7 @@ public class DialogueManager : MonoBehaviour
         state = DialogueState.NPCResponding;
         isEndingDialogue = true;
 
-        SetSpeakerName("???");
+        SetSpeakerName(currentNPCName);
         typewriter.TypeText(npcLineQueue.Dequeue());
     }
 
@@ -286,7 +287,7 @@ public class DialogueManager : MonoBehaviour
             npcLineQueue.Enqueue(line);
 
         state = DialogueState.NPCResponding;
-        SetSpeakerName("???");
+        SetSpeakerName(currentNPCName);
         typewriter.TypeText(npcLineQueue.Dequeue());
     }
 
@@ -313,6 +314,7 @@ public class DialogueManager : MonoBehaviour
     {
         dialoguePanel.SetActive(false);
         currentDialogue = null;
+        currentNPCName = null;
         isEndingDialogue = false;
         
         // Reset canvas group alpha for next dialogue

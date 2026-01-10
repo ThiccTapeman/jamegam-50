@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: TheWatcher
+  m_EditorClassIdentifier: Assembly-CSharp::NPCDialogueData
+  introLine: "You\u2019re late\u2026 or early. It\u2019s difficult to tell with you."
+  choices:
+  - choiceText: Do I know you?
+    npcResponses:
+    - Not yet. But you always ask that.
+    hasBeenChosen: 0
+  - choiceText: What is this place?
+    npcResponses:
+    - A pause. You pass through it every time.
+    hasBeenChosen: 0
+  - choiceText: Something feels wrong.
+    npcResponses:
+    - That would be the weight you always bring with you.
+    hasBeenChosen: 0
+  - choiceText: I need to go back.
+    npcResponses:
+    - You always think you can.
+    hasBeenChosen: 0
+  endLine: The bell tolls for you.

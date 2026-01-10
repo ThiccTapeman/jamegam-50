@@ -3,6 +3,7 @@ using UnityEngine;
 public class ConfessionBooth : InteractableObject
 {
     [SerializeField] private NPCDialogueData dialogue;
+    [SerializeField] private string npcName = "Blank";
 
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
@@ -19,7 +20,7 @@ public class ConfessionBooth : InteractableObject
 
     public override void Interact(GameObject interactor)
     {
-        DialogueManager.Instance.StartDialogue(dialogue);
+        DialogueManager.Instance.StartDialogue(dialogue, npcName);
     }
 
     public void PlayBellSound()
