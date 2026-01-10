@@ -10,7 +10,7 @@ namespace ThiccTapeman.Player.Movement
 
         public bool lockOtherAbilitiesDuringUse = false;
 
-        public abstract void AwakeAbility(InputManager inputManager, Rigidbody2D rb);
+        public abstract void AwakeAbility(InputManager inputManager, Rigidbody2D rb, Animator animator);
         public abstract void DrawGizmos(Rigidbody2D rb, Collider2D col);
 
         // Input / non-physics

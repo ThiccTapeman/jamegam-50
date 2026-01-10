@@ -25,6 +25,7 @@ namespace ThiccTapeman.Player.Movement
 
         [Header("References")]
         [SerializeField] private Rigidbody2D rb;
+        [SerializeField] private Animator animator;
         [SerializeField] private string actionMapPath;
         [SerializeField] private List<PlayerMovementAbility> abilities = new List<PlayerMovementAbility>();
 
@@ -54,6 +55,10 @@ namespace ThiccTapeman.Player.Movement
                 rb = GetComponent<Rigidbody2D>();
                 return;
             }
+            if (animator == null)
+            {
+                animator = GetComponent<Animator>();
+            }
             if (inputManager == null)
             {
                 Debug.LogError("InputManager instance not found in the scene.");
@@ -64,11 +69,15 @@ namespace ThiccTapeman.Player.Movement
                 Debug.LogError("Rigidbody2D component not found on the Player GameObject.");
                 return;
             }
+            if (animator == null)
+            {
+                Debug.LogError("Animator component was not found on the Player GameObject");
+            }
 
             // Initialize abilities
             foreach (var ability in abilities)
             {
-                ability.AwakeAbility(inputManager, rb);
+                ability.AwakeAbility(inputManager, rb, animator);
             }
         }
 

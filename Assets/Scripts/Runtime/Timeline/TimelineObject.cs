@@ -18,6 +18,10 @@ namespace ThiccTapeman.Timeline
         public bool IsBranchInstance => isBranchInstance;
 
         Rigidbody2D rb;
+        Animator animator;
+        SpriteRenderer sr;
+        bool hasDeltaYParam;
+        const string DeltaYParam = "DeltaY";
 
         // Live recording (only on the live object)
         readonly List<TimelineState> liveStates = new List<TimelineState>();
@@ -31,6 +35,9 @@ namespace ThiccTapeman.Timeline
         void Awake()
         {
             rb = GetComponent<Rigidbody2D>();
+            animator = GetComponent<Animator>();
+            sr = GetComponentInChildren<SpriteRenderer>();
+            hasDeltaYParam = animator != null && HasAnimatorParameter(animator, DeltaYParam, AnimatorControllerParameterType.Float);
 
             // Only register live objects
             if (!isBranchInstance)
@@ -50,12 +57,51 @@ namespace ThiccTapeman.Timeline
             if (isBranchInstance) return;
             if (rb == null) return;
 
+            bool hasAnimator = false;
+            int animStateHash = 0;
+            float animNormalizedTime = 0f;
+            bool animLoop = false;
+
+            if (animator != null)
+            {
+                AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
+                hasAnimator = true;
+                animStateHash = state.fullPathHash;
+                animNormalizedTime = state.normalizedTime;
+                animLoop = state.loop || animNormalizedTime > 1f;
+            }
+
+            bool hasSpriteRenderer = false;
+            bool spriteFlipX = false;
+
+            if (sr != null)
+            {
+                hasSpriteRenderer = true;
+                spriteFlipX = sr.flipX;
+            }
+
+            bool hasDeltaY = false;
+            float deltaY = 0f;
+            if (animator != null && hasDeltaYParam)
+            {
+                hasDeltaY = true;
+                deltaY = animator.GetFloat(DeltaYParam);
+            }
+
             liveStates.Add(new TimelineState(
                 t,
                 rb.position,
                 rb.rotation,
                 rb.linearVelocity,
-                rb.angularVelocity
+                rb.angularVelocity,
+                hasAnimator,
+                animStateHash,
+                animNormalizedTime,
+                animLoop,
+                hasSpriteRenderer,
+                spriteFlipX,
+                hasDeltaY,
+                deltaY
             ));
         }
 
@@ -221,6 +267,17 @@ namespace ThiccTapeman.Timeline
             return list;
         }
 
+        static bool HasAnimatorParameter(Animator anim, string name, AnimatorControllerParameterType type)
+        {
+            if (anim == null) return false;
+            foreach (var p in anim.parameters)
+            {
+                if (p.name == name && p.type == type)
+                    return true;
+            }
+            return false;
+        }
+
         static List<TimelineState> ApplyPauseSegments(
             List<TimelineState> source,
             List<TimelineManager.PauseSegment> pauses)
@@ -312,6 +369,24 @@ namespace ThiccTapeman.Timeline
             rb.rotation = s.rotation;
             rb.linearVelocity = s.velocity;
             rb.angularVelocity = s.angularVelocity;
+
+            if (animator == null) animator = GetComponent<Animator>();
+            if (animator != null && s.hasAnimator)
+            {
+                if (s.hasDeltaY)
+                    animator.SetFloat(DeltaYParam, s.deltaY);
+
+                float normalized = s.animLoop
+                    ? Mathf.Repeat(s.animNormalizedTime, 1f)
+                    : Mathf.Clamp01(s.animNormalizedTime);
+
+                animator.Play(s.animStateHash, 0, normalized);
+                animator.Update(0f);
+            }
+
+            if (sr == null) sr = GetComponentInChildren<SpriteRenderer>();
+            if (sr != null && s.hasSpriteRenderer)
+                sr.flipX = s.spriteFlipX;
         }
 
         // ---------------- Data types ----------------
@@ -331,25 +406,135 @@ namespace ThiccTapeman.Timeline
             public float rotation;
             public Vector2 velocity;
             public float angularVelocity;
+            public bool hasAnimator;
+            public int animStateHash;
+            public float animNormalizedTime;
+            public bool animLoop;
+            public bool hasSpriteRenderer;
+            public bool spriteFlipX;
+            public bool hasDeltaY;
+            public float deltaY;
 
-            public TimelineState(float time, Vector2 pos, float rot, Vector2 vel, float angVel)
+            public TimelineState(
+                float time,
+                Vector2 pos,
+                float rot,
+                Vector2 vel,
+                float angVel,
+                bool hasAnimator,
+                int animStateHash,
+                float animNormalizedTime,
+                bool animLoop,
+                bool hasSpriteRenderer,
+                bool spriteFlipX,
+                bool hasDeltaY,
+                float deltaY)
             {
                 this.time = time;
                 position = pos;
                 rotation = rot;
                 velocity = vel;
                 angularVelocity = angVel;
+                this.hasAnimator = hasAnimator;
+                this.animStateHash = animStateHash;
+                this.animNormalizedTime = animNormalizedTime;
+                this.animLoop = animLoop;
+                this.hasSpriteRenderer = hasSpriteRenderer;
+                this.spriteFlipX = spriteFlipX;
+                this.hasDeltaY = hasDeltaY;
+                this.deltaY = deltaY;
             }
 
             public static TimelineState Lerp(TimelineState a, TimelineState b, float u, float time)
             {
-                return new TimelineState(
+                TimelineState s = new TimelineState(
                     time,
                     Vector2.Lerp(a.position, b.position, u),
                     Mathf.LerpAngle(a.rotation, b.rotation, u),
                     Vector2.Lerp(a.velocity, b.velocity, u),
-                    Mathf.Lerp(a.angularVelocity, b.angularVelocity, u)
+                    Mathf.Lerp(a.angularVelocity, b.angularVelocity, u),
+                    false,
+                    0,
+                    0f,
+                    false,
+                    false,
+                    false,
+                    false,
+                    0f
                 );
+
+                if (a.hasAnimator && b.hasAnimator)
+                {
+                    if (a.animStateHash == b.animStateHash)
+                    {
+                        s.hasAnimator = true;
+                        s.animStateHash = a.animStateHash;
+                        s.animLoop = a.animLoop;
+                        s.animNormalizedTime = Mathf.Lerp(a.animNormalizedTime, b.animNormalizedTime, u);
+                    }
+                    else if (u < 0.5f)
+                    {
+                        s.hasAnimator = true;
+                        s.animStateHash = a.animStateHash;
+                        s.animNormalizedTime = a.animNormalizedTime;
+                        s.animLoop = a.animLoop;
+                    }
+                    else
+                    {
+                        s.hasAnimator = true;
+                        s.animStateHash = b.animStateHash;
+                        s.animNormalizedTime = b.animNormalizedTime;
+                        s.animLoop = b.animLoop;
+                    }
+                }
+                else if (a.hasAnimator)
+                {
+                    s.hasAnimator = true;
+                    s.animStateHash = a.animStateHash;
+                    s.animNormalizedTime = a.animNormalizedTime;
+                    s.animLoop = a.animLoop;
+                }
+                else if (b.hasAnimator)
+                {
+                    s.hasAnimator = true;
+                    s.animStateHash = b.animStateHash;
+                    s.animNormalizedTime = b.animNormalizedTime;
+                    s.animLoop = b.animLoop;
+                }
+
+                if (a.hasSpriteRenderer && b.hasSpriteRenderer)
+                {
+                    s.hasSpriteRenderer = true;
+                    s.spriteFlipX = (u < 0.5f) ? a.spriteFlipX : b.spriteFlipX;
+                }
+                else if (a.hasSpriteRenderer)
+                {
+                    s.hasSpriteRenderer = true;
+                    s.spriteFlipX = a.spriteFlipX;
+                }
+                else if (b.hasSpriteRenderer)
+                {
+                    s.hasSpriteRenderer = true;
+                    s.spriteFlipX = b.spriteFlipX;
+                }
+
+                if (a.hasDeltaY && b.hasDeltaY)
+                {
+                    s.hasDeltaY = true;
+                    s.deltaY = Mathf.Lerp(a.deltaY, b.deltaY, u);
+                }
+                else if (a.hasDeltaY)
+                {
+                    s.hasDeltaY = true;
+                    s.deltaY = a.deltaY;
+                }
+                else if (b.hasDeltaY)
+                {
+                    s.hasDeltaY = true;
+                    s.deltaY = b.deltaY;
+                }
+
+                return s;
             }
         }
     }
