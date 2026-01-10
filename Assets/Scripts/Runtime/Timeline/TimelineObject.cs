@@ -15,6 +15,7 @@ namespace ThiccTapeman.Timeline
 
         [Header("Mode (runtime)")]
         [SerializeField] bool isBranchInstance = false;
+        public bool IsBranchInstance => isBranchInstance;
 
         Rigidbody2D rb;
 
@@ -86,6 +87,15 @@ namespace ThiccTapeman.Timeline
                 if (liveStates[i].time > time) liveStates.RemoveAt(i);
                 else break;
             }
+        }
+
+        public void ResetTimelineState()
+        {
+            if (isBranchInstance) return;
+
+            liveStates.Clear();
+            branches.Clear();
+            DestroyAllBranchInstances();
         }
 
         // ---------------- Rewind ----------------
