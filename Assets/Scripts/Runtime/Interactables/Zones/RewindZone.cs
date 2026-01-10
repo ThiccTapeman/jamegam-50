@@ -16,7 +16,8 @@ public class RewindZone : MonoBehaviour
             return;
         }
 
-        if (!collision.CompareTag("Player")) return;
+        if (!(collision.CompareTag("Player") && collision.isTrigger)) return;
+
 
         TimelineManager.GetInstance().Rewind(rewindSeconds);
     }
