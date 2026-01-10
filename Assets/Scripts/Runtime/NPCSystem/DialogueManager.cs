@@ -1,9 +1,10 @@
 
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
+using UIButton = UnityEngine.UI.Button; 
 using System.Collections;
 using System.Collections.Generic;
+using ThiccTapeman.Input;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI npcText;
     [SerializeField] private TextMeshProUGUI nameText;
     [SerializeField] private Transform choicesContainer;
-    [SerializeField] private Button choiceButtonPrefab;
+    [SerializeField] private UIButton choiceButtonPrefab;
     [SerializeField] private TypewriterText typewriter;
     [SerializeField] private CanvasGroup dialogueCanvasGroup;
     [SerializeField] private CanvasGroup choicesCanvasGroup;
@@ -52,9 +53,8 @@ public class DialogueManager : MonoBehaviour
         dialoguePanel.SetActive(true);
         dialogueCanvasGroup.alpha = 0f;
 
-        // Clear any existing text immediately
         npcText.text = "";
-        typewriter.Skip(); // Stop any existing typing animation
+        typewriter.Skip(); 
     
         if (dialogue.choices != null)
         {
@@ -207,7 +207,7 @@ public class DialogueManager : MonoBehaviour
 
     private void CreateChoiceButton(PlayerChoice choice)
     {
-        Button button = Instantiate(choiceButtonPrefab, choicesContainer);
+        UIButton button = Instantiate(choiceButtonPrefab, choicesContainer);
         button.GetComponentInChildren<TextMeshProUGUI>().text = choice.choiceText;
 
         button.transform.localScale = Vector3.zero;
@@ -222,7 +222,7 @@ public class DialogueManager : MonoBehaviour
 
     private void CreateLeaveButton()
     {
-        Button button = Instantiate(choiceButtonPrefab, choicesContainer);
+        UIButton button = Instantiate(choiceButtonPrefab, choicesContainer);
         button.GetComponentInChildren<TextMeshProUGUI>().text = "Leave";
 
         button.transform.localScale = Vector3.zero;
