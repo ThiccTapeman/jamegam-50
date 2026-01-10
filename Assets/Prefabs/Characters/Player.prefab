@@ -244,6 +244,7 @@ MonoBehaviour:
   interactCooldown: 0.1
   disableInventoryInput: 1
   useInventoryWhenNoInteractable: 1
+  promptPrefab: {fileID: 0}
 --- !u!61 &7823200239614053598
 BoxCollider2D:
   m_ObjectHideFlags: 0
