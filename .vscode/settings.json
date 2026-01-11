@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "jamegam-50.slnx"
+    "dotnet.defaultSolution": "Jame-Gam.slnx"
 }

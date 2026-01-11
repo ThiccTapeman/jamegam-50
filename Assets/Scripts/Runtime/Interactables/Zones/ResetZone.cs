@@ -14,10 +14,16 @@ public class ResetZone : MonoBehaviour
         if (timelineManager != null && Time.time - timelineManager.LastRewindTime < RewindTriggerIgnoreSeconds)
             return;
 
-        var timelineObject = collision.GetComponent<TimelineObject>();
-        if (timelineObject != null && timelineObject.IsBranchInstance)
+        if (collision.CompareTag("PlayerGhost"))
         {
             Destroy(collision.gameObject);
+            return;
+        }
+
+        var timelineObject = collision.GetComponentInParent<TimelineObject>();
+        if (timelineObject != null && timelineObject.IsBranchInstance)
+        {
+            Destroy(timelineObject.gameObject);
             return;
         }
 
