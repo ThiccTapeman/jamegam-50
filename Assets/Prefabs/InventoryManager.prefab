@@ -60,6 +60,10 @@ MonoBehaviour:
   maxSlots: 5
   useCooldown: 1
   handleUseInput: 1
+  firstItemImage: {fileID: 0}
+  firstItemAmountText: {fileID: 0}
+  secondItemImage: {fileID: 0}
+  secondItemAmountText: {fileID: 0}
   currentSlotIndex: 0
 --- !u!82 &3280939802423047526
 AudioSource:
@@ -70,7 +74,7 @@ AudioSource:
   m_GameObject: {fileID: 3195548122548635582}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 6089433006466062264, guid: f77a248ef2c625549a870957b7139418, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1

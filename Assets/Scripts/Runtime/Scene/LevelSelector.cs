@@ -46,6 +46,7 @@ public class LevelSelector : MonoBehaviour
     {
         if (instance != null && instance != this)
         {
+            instance.OverrideLevels(levels);
             Destroy(gameObject);
             return;
         }
@@ -308,6 +309,14 @@ public class LevelSelector : MonoBehaviour
         {
             SetLevelUnlocked(levels[nextIndex], true);
         }
+    }
+
+    void OverrideLevels(List<LevelSO> newLevels)
+    {
+        if (newLevels == null || newLevels.Count == 0) return;
+        levels = new List<LevelSO>(newLevels);
+        UpdateCurrentLevelIndexFromScene();
+        EnsureInitialUnlock();
     }
 
     string GetLevelId(LevelSO level)

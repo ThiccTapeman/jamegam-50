@@ -8,6 +8,15 @@ public class CameraMovement : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (target == null)
+        {
+            GameObject player = GameObject.FindWithTag("Player");
+            if (player != null)
+            {
+                target = player.transform;
+            }
+            if (target == null) return;
+        }
         Vector3 desiredPosition = target.position + offset;
         Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
         transform.position = smoothedPosition;
