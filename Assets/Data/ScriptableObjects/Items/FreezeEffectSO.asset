@@ -17,6 +17,7 @@ MonoBehaviour:
   maxStackSize: 10
   itemUseCooldown: 10
   icon: {fileID: 2506783575239020242, guid: 75ae759a6890609438fc5f4f666d51eb, type: 3}
+  image: {fileID: 3612454056809182123, guid: a0a8aeeea3828714b9f38af1d4b0b926, type: 3}
   sound:
     mainClip: {fileID: 8300000, guid: aa8180a4c971fb44a94a80a78e9dcb51, type: 3}
     loop: 0

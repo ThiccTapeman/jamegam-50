@@ -293,20 +293,20 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 560632366931424027, guid: f0da854ca64030e4e9d7d34af6528583, type: 3}
       propertyPath: slots.Array.data[0].Amount
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 560632366931424027, guid: f0da854ca64030e4e9d7d34af6528583, type: 3}
       propertyPath: slots.Array.data[0].itemSO
       value: 
-      objectReference: {fileID: 11400000, guid: 962fa9eaf926dc442a963c9c9f01f816, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 560632366931424027, guid: f0da854ca64030e4e9d7d34af6528583, type: 3}
       propertyPath: slots.Array.data[1].Amount
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 560632366931424027, guid: f0da854ca64030e4e9d7d34af6528583, type: 3}
       propertyPath: slots.Array.data[1].itemSO
       value: 
-      objectReference: {fileID: 11400000, guid: 69a236ca0a4451642ac5c7e0c5953fe6, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 3195548122548635582, guid: f0da854ca64030e4e9d7d34af6528583, type: 3}
       propertyPath: m_Name
       value: InventoryManager

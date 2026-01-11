@@ -9,7 +9,7 @@ public abstract class Button : MonoBehaviour
     [SerializeField] private SoundManager.SoundVariations buttonUnPressClip;
     public Action<bool> OnButtonStateChanged;
 
-    [SerializeField] private bool isPressed = false;
+    public bool isPressed = false;
 
     private ResetManager resetManager;
     private bool isPressedByDefault = false;
