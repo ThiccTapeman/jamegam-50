@@ -1324,7 +1324,11 @@ MonoBehaviour:
   dialogue: {fileID: 11400000, guid: b46885d078aa8dd45ae075490ad047bb, type: 2}
   npcName: Blank
   audioSource: {fileID: 0}
-  bellSound: {fileID: 0}
+  bellSounds:
+    mainClip: {fileID: 0}
+    loop: 0
+    volume: 1
+    variations: []
 --- !u!212 &291627110
 SpriteRenderer:
   serializedVersion: 2
