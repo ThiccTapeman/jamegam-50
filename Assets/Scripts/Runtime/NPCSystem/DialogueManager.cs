@@ -114,7 +114,7 @@ public class DialogueManager : MonoBehaviour
                     {
                         booth.PlayBellSound();
                     }
-                    StartCoroutine(FadeOutAndEndDialogue());
+                    ShowLeaveButtonOnly();
                 }
                 else
                 {
@@ -147,8 +147,6 @@ public class DialogueManager : MonoBehaviour
                 CreateChoiceButton(choice);
             }
         }
-
-        CreateLeaveButton();
 
         if (!hasAvailableChoices)
         {
@@ -206,7 +204,7 @@ public class DialogueManager : MonoBehaviour
         button.transform.localScale = Vector3.zero;
         StartCoroutine(ScaleInButton(button.transform));
 
-        button.onClick.AddListener(() => HandleChoiceSelection(null));
+        button.onClick.AddListener(HandleLeaveSelected);
     }
 
     private IEnumerator ScaleInButton(Transform buttonTransform)
@@ -298,5 +296,29 @@ public class DialogueManager : MonoBehaviour
         
         // Reset canvas group alpha for next dialogue
         dialogueCanvasGroup.alpha = 1f;
+    }
+
+    private void ShowLeaveButtonOnly()
+    {
+        state = DialogueState.Choosing;
+        SetSpeakerName("You");
+        ClearChoices();
+        CreateLeaveButton();
+    }
+
+    private void HandleLeaveSelected()
+    {
+        LevelSelector selector = LevelSelector.GetInstance();
+        if (selector != null)
+        {
+            LevelSO current = selector.GetCurrentLevel();
+            LevelCompletionParams completionParams = LevelCompletionParams.FromTime(
+                LevelTimer.GetInstance().ElapsedTime,
+                current != null ? current.targetTimeSeconds : 0f
+            );
+            selector.CompleteLevel(completionParams);
+        }
+
+        StartCoroutine(FadeOutAndEndDialogue());
     }
 }
