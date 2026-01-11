@@ -246,7 +246,13 @@ namespace ThiccTapeman.Timeline
 
             int count = 0;
             var ghosts = GameObject.FindGameObjectsWithTag("PlayerGhost");
-            if (ghosts != null) count = ghosts.Length;
+            if (ghosts != null) {
+                Debug.Log(ghosts.Length);
+                if (ghosts.Length == 0) count = 0;
+                else if (ghosts.Length == 1) count = 1;
+                else if (ghosts.Length == 2) count = 2;
+                else count = ghosts.Length / 2; //maybe don't divide by 2
+            }
 
             music.SetGhostCount(count);
         }
