@@ -18,10 +18,17 @@ namespace ThiccTapeman.Timeline
         SpriteRenderer sr;
         Collider2D[] colliders;
         bool[] colliderOriginalTriggers;
+        Collider2D[] playerColliders;
+        bool isIgnoringPlayerCollisions;
         bool hasDeltaYParam;
         bool hasDeltaXParam;
         bool hasIsGroundedParam;
         bool hasIsWallSlidingParam;
+        RigidbodyConstraints2D originalConstraints;
+        Vector2 pausedLinearVelocity;
+        float pausedAngularVelocity;
+        bool hasOriginalConstraints;
+        bool isPausedFrozen;
         const string DeltaYParam = "DeltaY";
         const string DeltaXParam = "DeltaX";
         const string IsGroundedParam = "IsGrounded";
@@ -39,9 +46,15 @@ namespace ThiccTapeman.Timeline
             recordingEndTime = states[^1].time;
 
             rb = GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                originalConstraints = rb.constraints;
+                hasOriginalConstraints = true;
+            }
             animator = GetComponent<Animator>();
             sr = GetComponentInChildren<SpriteRenderer>();
             colliders = GetComponentsInChildren<Collider2D>();
+            CachePlayerColliders();
             var colliderState = GetComponent<BranchColliderState>();
             if (colliderState != null && colliderState.originalIsTrigger != null)
             {
@@ -69,11 +82,16 @@ namespace ThiccTapeman.Timeline
             {
                 manager.OnPauseStateChanged += HandlePauseStateChanged;
                 ApplyCollisionState(manager.IsTimePaused);
+                ApplyEndedPauseState(manager.IsTimePaused);
+                ApplyPlayerCollisionIgnore(!manager.IsTimePaused);
             }
             else
             {
                 ApplyCollisionState(false);
             }
+
+            if (manager == null)
+                ApplyPlayerCollisionIgnore(true);
         }
 
         public void Tick(float branchTime)
@@ -160,6 +178,9 @@ namespace ThiccTapeman.Timeline
             rb.angularVelocity = s.angularVelocity;
             isEnded = true;
             ApplyCollisionState(true);
+            var manager = TimelineManager.TryGetInstance();
+            ApplyEndedPauseState(manager != null && manager.IsTimePaused);
+            ApplyPlayerCollisionIgnore(manager == null || !manager.IsTimePaused);
         }
 
         void Update()
@@ -188,6 +209,8 @@ namespace ThiccTapeman.Timeline
         void HandlePauseStateChanged(bool isPaused)
         {
             ApplyCollisionState(isPaused);
+            ApplyEndedPauseState(isPaused);
+            ApplyPlayerCollisionIgnore(!isPaused);
         }
 
         void ApplyCollisionState(bool enabled)
@@ -214,6 +237,60 @@ namespace ThiccTapeman.Timeline
                     col.isTrigger = true;
                 }
             }
+        }
+
+        void ApplyEndedPauseState(bool isPaused)
+        {
+            if (!isEnded || rb == null) return;
+
+            if (isPaused)
+            {
+                if (isPausedFrozen) return;
+                pausedLinearVelocity = rb.linearVelocity;
+                pausedAngularVelocity = rb.angularVelocity;
+                rb.constraints = RigidbodyConstraints2D.FreezeAll;
+                rb.linearVelocity = Vector2.zero;
+                rb.angularVelocity = 0f;
+                isPausedFrozen = true;
+            }
+            else
+            {
+                if (!isPausedFrozen) return;
+                if (hasOriginalConstraints)
+                    rb.constraints = originalConstraints;
+                rb.linearVelocity = pausedLinearVelocity;
+                rb.angularVelocity = pausedAngularVelocity;
+                isPausedFrozen = false;
+            }
+        }
+
+        void CachePlayerColliders()
+        {
+            var player = GameObject.FindGameObjectWithTag("Player");
+            playerColliders = player != null ? player.GetComponentsInChildren<Collider2D>() : null;
+        }
+
+        void ApplyPlayerCollisionIgnore(bool ignore)
+        {
+            if (colliders == null || colliders.Length == 0) return;
+            if (playerColliders == null || playerColliders.Length == 0) return;
+            if (isIgnoringPlayerCollisions == ignore) return;
+
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                var col = colliders[i];
+                if (col == null) continue;
+
+                for (int j = 0; j < playerColliders.Length; j++)
+                {
+                    var playerCol = playerColliders[j];
+                    if (playerCol == null) continue;
+
+                    Physics2D.IgnoreCollision(col, playerCol, ignore);
+                }
+            }
+
+            isIgnoringPlayerCollisions = ignore;
         }
 
         void OnDestroy()
