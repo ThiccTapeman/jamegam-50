@@ -87,6 +87,8 @@ namespace ThiccTapeman.Timeline
         void Start()
         {
             startDelayRemaining = Mathf.Max(0f, startDelaySeconds);
+            SyncMusicState();
+            UpdateGhostCountFromScene();
         }
 
         void OnApplicationQuit()
@@ -162,6 +164,7 @@ namespace ThiccTapeman.Timeline
             IsTimePaused = true;
             pauseStartTime = TimeNow;
             OnPauseStateChanged?.Invoke(true);
+            SyncMusicState();
         }
 
         public void ResumeTime()
@@ -174,6 +177,7 @@ namespace ThiccTapeman.Timeline
                 pauseStartTime = -1f;
             }
             OnPauseStateChanged?.Invoke(false);
+            SyncMusicState();
         }
 
         public void SetTimelineReferencePoint()
@@ -185,6 +189,7 @@ namespace ThiccTapeman.Timeline
             IsTimePaused = false;
             pauseSegments.Clear();
             pauseStartTime = -1f;
+            SyncMusicState();
 
             for (int i = 0; i < objects.Count; i++)
             {
@@ -232,6 +237,25 @@ namespace ThiccTapeman.Timeline
 
             if (IsTimePaused)
                 pauseStartTime = TimeNow;
+        }
+
+        public void UpdateGhostCountFromScene()
+        {
+            var music = MusicDirector.GetInstance();
+            if (music == null) return;
+
+            int count = 0;
+            var ghosts = GameObject.FindGameObjectsWithTag("PlayerGhost");
+            if (ghosts != null) count = ghosts.Length;
+
+            music.SetGhostCount(count);
+        }
+
+        void SyncMusicState()
+        {
+            var music = MusicDirector.GetInstance();
+            if (music == null) return;
+            music.SetTimeStopped(IsTimePaused);
         }
 
         List<PauseSegment> BuildPauseSegmentsForBranch(float upToTime)

@@ -24,6 +24,9 @@ public class LevelSO : ScriptableObject
     public int difficulty;
     public float targetTimeSeconds;
 
+    [Header("Progression")]
+    public bool defaultUnlocked = false;
+
 #if UNITY_EDITOR
     void OnValidate()
     {
