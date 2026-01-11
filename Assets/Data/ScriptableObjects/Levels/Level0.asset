@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3bb3dd4df0b1fe4ea3ccb2305d99a32, type: 3}
+  m_Name: Level0
+  m_EditorClassIdentifier: Assembly-CSharp::LevelSO
+  levelId: Level0
+  levelName: Level0
+  description: Level0
+  sceneName: Level0
+  sceneAsset: {fileID: 102900000, guid: 090acbca728f0b946a69c2053dc4a2de, type: 3}
+  difficulty: 0
+  targetTimeSeconds: 120
+  defaultUnlocked: 1
