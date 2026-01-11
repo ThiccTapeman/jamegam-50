@@ -58,7 +58,7 @@ MonoBehaviour:
   confirmSound:
     mainClip: {fileID: 8300000, guid: 97cb65854dd6786458ecaaaaa80fd2a5, type: 3}
     loop: 0
-    volume: 1
+    volume: 0.971
 --- !u!82 &1572478190160941936
 AudioSource:
   m_ObjectHideFlags: 0
@@ -68,7 +68,7 @@ AudioSource:
   m_GameObject: {fileID: 780826844836664769}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 6089433006466062264, guid: f77a248ef2c625549a870957b7139418, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
