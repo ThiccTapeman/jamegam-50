@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public sealed class MusicDirector : MonoBehaviour
@@ -14,9 +15,20 @@ public sealed class MusicDirector : MonoBehaviour
     [SerializeField] private AudioSource sourceA;
     [SerializeField] private AudioSource sourceB;
 
+    [Header("Layers")]
+    [SerializeField] private List<AudioClip> ghostLayers = new List<AudioClip>();
+    [SerializeField] private AudioClip timeStoppedLayer;
+    [SerializeField] private float layerFadeSeconds = 1f;
+    [SerializeField] private bool alignLayerTime = true;
+    [SerializeField] private bool playOnStart = true;
+    [SerializeField, Min(0)] private int startingGhostCount = 1;
+    [SerializeField] private bool startTimeStopped = false;
+
     private AudioSource activeSource;
     private AudioSource inactiveSource;
     private Coroutine fadeRoutine;
+    private int currentGhostCount = 1;
+    private bool isTimeStopped;
 
     public static MusicDirector GetInstance()
     {
@@ -48,6 +60,25 @@ public sealed class MusicDirector : MonoBehaviour
 
         activeSource = sourceA;
         inactiveSource = sourceB;
+    }
+
+    private void Start()
+    {
+        currentGhostCount = Mathf.Max(0, startingGhostCount);
+        isTimeStopped = startTimeStopped;
+
+        if (playOnStart)
+        {
+            if (isTimeStopped)
+            {
+                if (timeStoppedLayer != null)
+                    FadeTo(timeStoppedLayer, layerFadeSeconds, alignLayerTime, true);
+            }
+            else
+            {
+                PlayGhostLayer();
+            }
+        }
     }
 
     public void FadeTo(AudioClip clip, float fadeSeconds, bool alignToCurrent, bool loop)
@@ -114,5 +145,40 @@ public sealed class MusicDirector : MonoBehaviour
         var temp = activeSource;
         activeSource = inactiveSource;
         inactiveSource = temp;
+    }
+
+    public void SetGhostCount(int ghostCount)
+    {
+        currentGhostCount = Mathf.Max(0, ghostCount);
+        if (!isTimeStopped)
+        {
+            PlayGhostLayer();
+        }
+    }
+
+    public void SetTimeStopped(bool stopped)
+    {
+        if (isTimeStopped == stopped) return;
+        isTimeStopped = stopped;
+
+        if (isTimeStopped)
+        {
+            if (timeStoppedLayer != null)
+                FadeTo(timeStoppedLayer, layerFadeSeconds, alignLayerTime, true);
+        }
+        else
+        {
+            PlayGhostLayer();
+        }
+    }
+
+    void PlayGhostLayer()
+    {
+        if (ghostLayers == null || ghostLayers.Count == 0) return;
+        int index = Mathf.Clamp(currentGhostCount - 1, 0, ghostLayers.Count - 1);
+        AudioClip clip = ghostLayers[index];
+        if (clip == null) return;
+
+        FadeTo(clip, layerFadeSeconds, alignLayerTime, true);
     }
 }

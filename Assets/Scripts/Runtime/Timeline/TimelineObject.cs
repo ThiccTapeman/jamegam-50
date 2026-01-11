@@ -209,6 +209,7 @@ namespace ThiccTapeman.Timeline
                 if (p != null) Destroy(p.gameObject);
             }
             branchPlayers.Clear();
+            TimelineManager.TryGetInstance()?.UpdateGhostCountFromScene();
         }
 
         void RecreateBranchInstances(float spawnGlobalTime)
@@ -254,6 +255,8 @@ namespace ThiccTapeman.Timeline
 
                 branchPlayers.Add(player);
             }
+
+            TimelineManager.TryGetInstance()?.UpdateGhostCountFromScene();
         }
 
         // ---------------- Sampling helpers ----------------
