@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Unity.VisualStudio.Editor;
 using ThiccTapeman.Input;
 using ThiccTapeman.Inventory;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -39,7 +40,9 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private float useCooldown = 1f;
     [SerializeField] public bool handleUseInput = true;
     [SerializeField] private UnityEngine.UI.Image firstItemImage;
+    [SerializeField] private TextMeshProUGUI firstItemAmountText;
     [SerializeField] private UnityEngine.UI.Image secondItemImage;
+    [SerializeField] private TextMeshProUGUI secondItemAmountText;
 
     // Privates
     private InputManager inputManager;
@@ -77,15 +80,39 @@ public class InventoryManager : MonoBehaviour
         // Subscribe to inventory changes to update images
         OnInventoryChanged += UpdateItemImages;
         OnCurrentSlotChanged += UpdateItemImages;
-        
+        OnInventoryChanged += UpdateAmountTexts;
+        OnCurrentSlotChanged += UpdateAmountTexts;
         // Initial update
         UpdateItemImages();
+        UpdateAmountTexts();
+    }
+
+    private void UpdateAmountTexts()
+    {
+        if (slots.Count > 0 && slots[0] != null)
+        {
+            firstItemAmountText.text = slots[0].Amount.ToString();
+        }
+        else
+        {
+            firstItemAmountText.text = "";
+        }   
+        if (slots.Count > 1 && slots[1] != null)
+        {
+            secondItemAmountText.text = slots[1].Amount.ToString();
+        }
+        else
+        {
+            secondItemAmountText.text = "";
+        }
     }
 
     private void OnDestroy()
     {
         OnInventoryChanged -= UpdateItemImages;
         OnCurrentSlotChanged -= UpdateItemImages;
+        OnInventoryChanged -= UpdateAmountTexts;
+        OnCurrentSlotChanged -= UpdateAmountTexts;
     }
 
     private void Update()
@@ -113,6 +140,7 @@ public class InventoryManager : MonoBehaviour
         {
             // Swap slot 0 and slot 1 (slots 1 and 2)
             SwapSlots(0, 1);
+            UpdateAmountTexts();
         }
     }
 
@@ -134,7 +162,7 @@ public class InventoryManager : MonoBehaviour
 
         OnInventoryChanged?.Invoke();
         OnCurrentSlotChanged?.Invoke();
-        Debug.Log($"Swapped slot {slotIndex1} and slot {slotIndex2}");
+        UpdateAmountTexts();
     }
 
     private void HandleSlotHotkeys()
@@ -174,6 +202,7 @@ public class InventoryManager : MonoBehaviour
         {
             Debug.Log($"Item in slot {currentSlotIndex} is on cooldown or out of stock.");
         }
+        UpdateAmountTexts();
 
         return used;
     }

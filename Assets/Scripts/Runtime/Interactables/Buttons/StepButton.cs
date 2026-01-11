@@ -4,7 +4,6 @@ using UnityEngine;
 public class StepButton : Button
 {
     int stepCount = 0;
-    bool isPressed = false;
     private Animator anim;
     private void Awake()
     {
