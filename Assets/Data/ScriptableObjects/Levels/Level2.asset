@@ -15,8 +15,8 @@ MonoBehaviour:
   levelId: level2
   levelName: level2
   description: Level0
-  sceneName: Level0
-  sceneAsset: {fileID: 102900000, guid: 090acbca728f0b946a69c2053dc4a2de, type: 3}
+  sceneName: Level2
+  sceneAsset: {fileID: 102900000, guid: dc291d9702a4eab41b32f1bd6e9f6635, type: 3}
   difficulty: 0
   targetTimeSeconds: 120
   defaultUnlocked: 0
