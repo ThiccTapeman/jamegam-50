@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
 public class StepButton : Button
 {
     int stepCount = 0;

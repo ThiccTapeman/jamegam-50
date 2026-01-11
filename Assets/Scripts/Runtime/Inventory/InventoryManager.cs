@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.Unity.VisualStudio.Editor;
 using ThiccTapeman.Input;
 using ThiccTapeman.Inventory;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 //
 //this class with Slot.cs handles the input (old input system now for testing), keeping fruits and display the remaining amount of them
@@ -15,13 +16,14 @@ public class InventoryManager : MonoBehaviour
 
     public Action OnInventoryChanged;
     public Action OnCurrentSlotChanged;
+    
     public AudioSource source;
 
     public static InventoryManager GetInstance()
     {
         if (instance == null)
         {
-            instance = FindObjectOfType<InventoryManager>();
+            instance = FindAnyObjectByType<InventoryManager>();
             if (instance == null)
             {
                 GameObject obj = new GameObject("InventoryManager");
@@ -33,9 +35,11 @@ public class InventoryManager : MonoBehaviour
 
     [Header("Inventory Settings")]
     public List<Slot> slots = new List<Slot>();
-    [SerializeField] private int maxSlots = 5;
+    [SerializeField] private int maxSlots = 2;
     [SerializeField] private float useCooldown = 1f;
     [SerializeField] public bool handleUseInput = true;
+    [SerializeField] private UnityEngine.UI.Image firstItemImage;
+    [SerializeField] private UnityEngine.UI.Image secondItemImage;
 
     // Privates
     private InputManager inputManager;
@@ -69,6 +73,19 @@ public class InventoryManager : MonoBehaviour
         {
             slotActions[i] = inputManager.GetAction("Player", $"Slot{i + 1}");
         }
+
+        // Subscribe to inventory changes to update images
+        OnInventoryChanged += UpdateItemImages;
+        OnCurrentSlotChanged += UpdateItemImages;
+        
+        // Initial update
+        UpdateItemImages();
+    }
+
+    private void OnDestroy()
+    {
+        OnInventoryChanged -= UpdateItemImages;
+        OnCurrentSlotChanged -= UpdateItemImages;
     }
 
     private void Update()
@@ -94,22 +111,30 @@ public class InventoryManager : MonoBehaviour
         float scrollValue = scrollAction.ReadValue<float>();
         if (scrollValue != 0)
         {
-            if (slots.Count == 0) return;
-
-            if (scrollValue > 0)
-            {
-                currentSlotIndex = (currentSlotIndex + 1) % slots.Count;
-                OnCurrentSlotChanged?.Invoke();
-                Debug.Log($"Switched to slot {currentSlotIndex} with a: {slots[currentSlotIndex].itemSO?.itemName ?? "Empty"}");
-            }
-            else if (scrollValue < 0)
-            {
-                currentSlotIndex = (currentSlotIndex - 1 + slots.Count) % slots.Count;
-                OnCurrentSlotChanged?.Invoke();
-                Debug.Log($"Switched to slot {currentSlotIndex} with a: {slots[currentSlotIndex].itemSO?.itemName ?? "Empty"}");
-            }
-
+            // Swap slot 0 and slot 1 (slots 1 and 2)
+            SwapSlots(0, 1);
         }
+    }
+
+    private void SwapSlots(int slotIndex1, int slotIndex2)
+    {
+        if (slots.Count < 2 || slotIndex1 < 0 || slotIndex2 < 0 || 
+            slotIndex1 >= slots.Count || slotIndex2 >= slots.Count) 
+            return;
+
+        // Swap the items and amounts
+        ItemSO tempItemSO = slots[slotIndex1].itemSO;
+        int tempAmount = slots[slotIndex1].Amount;
+
+        slots[slotIndex1].itemSO = slots[slotIndex2].itemSO;
+        slots[slotIndex1].Amount = slots[slotIndex2].Amount;
+
+        slots[slotIndex2].itemSO = tempItemSO;
+        slots[slotIndex2].Amount = tempAmount;
+
+        OnInventoryChanged?.Invoke();
+        OnCurrentSlotChanged?.Invoke();
+        Debug.Log($"Swapped slot {slotIndex1} and slot {slotIndex2}");
     }
 
     private void HandleSlotHotkeys()
@@ -126,6 +151,9 @@ public class InventoryManager : MonoBehaviour
             currentSlotIndex = i;
             OnCurrentSlotChanged?.Invoke();
             Debug.Log($"Switched to slot {currentSlotIndex} with a: {slots[currentSlotIndex].itemSO?.itemName ?? "Empty"}");
+            
+            // Use the item in the selected slot
+            UseItemInSlot(i);
             break;
         }
     }
@@ -146,6 +174,27 @@ public class InventoryManager : MonoBehaviour
         {
             Debug.Log($"Item in slot {currentSlotIndex} is on cooldown or out of stock.");
         }
+
+        return used;
+    }
+
+    private bool UseItemInSlot(int slotIndex)
+    {
+        if (slots.Count == 0 || slotIndex < 0 || slotIndex >= slots.Count) return false;
+        
+        // Check cooldown
+        if (Time.time - lastUseTime < useCooldown && lastUseTime != -1) return false;
+
+        Slot slot = slots[slotIndex];
+        if (slot.itemSO == null) return false;
+
+        lastUseTime = Time.time;
+        bool used = slot.TryUse();
+        if (used)
+        {
+            OnInventoryChanged?.Invoke();
+        }
+        
 
         return used;
     }
@@ -229,5 +278,38 @@ public class InventoryManager : MonoBehaviour
             }
         }
         Debug.LogWarning("Item not found in inventory.");
+    }
+
+    private void UpdateItemImages()
+    {
+        // Update first item image (slot 0)
+        if (firstItemImage != null)
+        {
+            if (slots.Count > 0 && slots[0] != null && slots[0].itemSO != null && slots[0].itemSO.image != null)
+            {
+                firstItemImage.sprite = slots[0].itemSO.image;
+                firstItemImage.enabled = true;
+            }
+            else
+            {
+                firstItemImage.sprite = null;
+                firstItemImage.enabled = false;
+            }
+        }
+
+        // Update second item image (slot 1)
+        if (secondItemImage != null)
+        {
+            if (slots.Count > 1 && slots[1] != null && slots[1].itemSO != null && slots[1].itemSO.image != null)
+            {
+                secondItemImage.sprite = slots[1].itemSO.image;
+                secondItemImage.enabled = true;
+            }
+            else
+            {
+                secondItemImage.sprite = null;
+                secondItemImage.enabled = false;
+            }
+        }
     }
 }
