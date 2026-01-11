@@ -82,6 +82,7 @@ namespace ThiccTapeman.Timeline
                 return;
             }
             instance = this;
+            DontDestroyOnLoad(gameObject);
         }
 
         void Start()
@@ -100,7 +101,6 @@ namespace ThiccTapeman.Timeline
         {
             if (instance == this)
             {
-                isShuttingDown = true;
                 instance = null;
             }
         }

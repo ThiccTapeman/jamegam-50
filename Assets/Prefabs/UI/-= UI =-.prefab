@@ -71,7 +71,7 @@ MonoBehaviour:
 '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f6e0ac9e24b174443929872fc3270168, type: 2}
-  m_sharedMaterial: {fileID: -2317866886477618360, guid: f6e0ac9e24b174443929872fc3270168, type: 2}
+  m_sharedMaterial: {fileID: 1115840852582214828, guid: f6e0ac9e24b174443929872fc3270168, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -363,7 +363,7 @@ MonoBehaviour:
 '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f6e0ac9e24b174443929872fc3270168, type: 2}
-  m_sharedMaterial: {fileID: -2317866886477618360, guid: f6e0ac9e24b174443929872fc3270168, type: 2}
+  m_sharedMaterial: {fileID: 1115840852582214828, guid: f6e0ac9e24b174443929872fc3270168, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -515,7 +515,7 @@ MonoBehaviour:
     Scroll to swap fruits'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f6e0ac9e24b174443929872fc3270168, type: 2}
-  m_sharedMaterial: {fileID: -2317866886477618360, guid: f6e0ac9e24b174443929872fc3270168, type: 2}
+  m_sharedMaterial: {fileID: 1115840852582214828, guid: f6e0ac9e24b174443929872fc3270168, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -769,7 +769,7 @@ MonoBehaviour:
 '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f6e0ac9e24b174443929872fc3270168, type: 2}
-  m_sharedMaterial: {fileID: -2317866886477618360, guid: f6e0ac9e24b174443929872fc3270168, type: 2}
+  m_sharedMaterial: {fileID: 0}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -835,7 +835,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &8835202380304445382
@@ -854,7 +854,7 @@ MonoBehaviour:
   charSound:
     mainClip: {fileID: 8300000, guid: d1451bd14e59f734dba5841a94edb344, type: 3}
     loop: 0
-    volume: 0.535
+    volume: 0.221
   audioSource: {fileID: 812568124501594308}
 --- !u!225 &3239619855120872968
 CanvasGroup:
@@ -1130,7 +1130,7 @@ GameObject:
   - component: {fileID: 1129044572054651102}
   - component: {fileID: 2394411364239122671}
   m_Layer: 5
-  m_Name: FruitImage
+  m_Name: FirstFruitImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1302,7 +1302,7 @@ MonoBehaviour:
   m_text: 1 x
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f6e0ac9e24b174443929872fc3270168, type: 2}
-  m_sharedMaterial: {fileID: -2317866886477618360, guid: f6e0ac9e24b174443929872fc3270168, type: 2}
+  m_sharedMaterial: {fileID: 1115840852582214828, guid: f6e0ac9e24b174443929872fc3270168, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1405,7 +1405,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 70, y: -65}
+  m_AnchoredPosition: {x: 61, y: -38}
   m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6421972277100611935
@@ -1429,7 +1429,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.6313726}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1620,7 +1620,7 @@ MonoBehaviour:
   m_text: NPC Name
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f6e0ac9e24b174443929872fc3270168, type: 2}
-  m_sharedMaterial: {fileID: -2317866886477618360, guid: f6e0ac9e24b174443929872fc3270168, type: 2}
+  m_sharedMaterial: {fileID: 0}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1686,7 +1686,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!225 &3556423033116777082
@@ -1769,7 +1769,7 @@ MonoBehaviour:
   m_text: 2x
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f6e0ac9e24b174443929872fc3270168, type: 2}
-  m_sharedMaterial: {fileID: -2317866886477618360, guid: f6e0ac9e24b174443929872fc3270168, type: 2}
+  m_sharedMaterial: {fileID: 1115840852582214828, guid: f6e0ac9e24b174443929872fc3270168, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
