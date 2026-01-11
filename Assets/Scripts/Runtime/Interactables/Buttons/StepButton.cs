@@ -3,7 +3,12 @@ using UnityEngine;
 public class StepButton : Button
 {
     int stepCount = 0;
+    public AudioSource upSource;
+    public AudioSource downSource;
+    [SerializeField] private SoundManager.Sound downSound;
+    [SerializeField] private SoundManager.Sound upSound;
     private void OnTriggerEnter2D(Collider2D other)
+    
     {
         if ((other.CompareTag("Player") && !other.isTrigger) || other.CompareTag("PlayerGhost"))
         {
@@ -11,6 +16,7 @@ public class StepButton : Button
             if (stepCount == 1)
             {
                 OnButtonStateChanged?.Invoke(true);
+                downSound.PlaySound(downSource);
             }
         }
     }
@@ -24,6 +30,7 @@ public class StepButton : Button
             if (stepCount == 0)
             {
                 OnButtonStateChanged?.Invoke(false);
+                upSound.PlaySound(upSource);
             }
         }
     }
