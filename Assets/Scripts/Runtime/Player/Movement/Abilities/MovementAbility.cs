@@ -170,6 +170,11 @@ namespace ThiccTapeman.Player.Movement
 
         private void UpdateFootsteps()
         {
+            if (lastStepTime > Time.time)
+            {
+                lastStepTime = 0;
+            }
+
             if (steps == null || soundSource == null || rb == null) return;
             if (!isGrounded) return;
 

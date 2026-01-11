@@ -714,7 +714,7 @@ MonoBehaviour:
   charactersPerSecond: 40
   charSound:
     mainClip: {fileID: 8300000, guid: d1451bd14e59f734dba5841a94edb344, type: 3}
-    loop: 1
+    loop: 0
     volume: 0.535
   audioSource: {fileID: 812568124501594308}
 --- !u!225 &3239619855120872968

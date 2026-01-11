@@ -27,7 +27,7 @@ public sealed class MusicDirector : MonoBehaviour
     private AudioSource activeSource;
     private AudioSource inactiveSource;
     private Coroutine fadeRoutine;
-    private int currentGhostCount = 1;
+    [SerializeField] private int currentGhostCount = 1;
     private bool isTimeStopped;
 
     public static MusicDirector GetInstance()
@@ -175,7 +175,7 @@ public sealed class MusicDirector : MonoBehaviour
     void PlayGhostLayer()
     {
         if (ghostLayers == null || ghostLayers.Count == 0) return;
-        int index = Mathf.Clamp(currentGhostCount - 1, 0, ghostLayers.Count - 1);
+        int index = Mathf.Clamp(currentGhostCount, 0, ghostLayers.Count - 1); //maybe currentGhostCount - 1
         AudioClip clip = ghostLayers[index];
         if (clip == null) return;
 
