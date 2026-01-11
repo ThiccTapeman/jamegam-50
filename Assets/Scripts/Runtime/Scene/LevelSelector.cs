@@ -57,6 +57,7 @@ public class LevelSelector : MonoBehaviour
         }
 
         UpdateCurrentLevelIndexFromScene();
+        EnsureInitialUnlock();
     }
 
     void OnEnable()
@@ -151,7 +152,9 @@ public class LevelSelector : MonoBehaviour
             return;
         }
 
+        SetLevelUnlocked(currentLevel, true);
         SaveCompletion(currentLevel, completionParams);
+        UnlockNextLevel(currentLevel);
         LoadNextLevel();
     }
 
@@ -160,6 +163,41 @@ public class LevelSelector : MonoBehaviour
         string levelId = GetLevelId(level);
         if (string.IsNullOrEmpty(levelId)) return false;
         return PlayerPrefs.GetInt(CompletedKey(levelId), 0) == 1;
+    }
+
+    public bool IsLevelUnlocked(LevelSO level)
+    {
+        if (level == null) return false;
+        string levelId = GetLevelId(level);
+        if (string.IsNullOrEmpty(levelId)) return false;
+        if (!PlayerPrefs.HasKey(UnlockedKey(levelId)))
+        {
+            return level.defaultUnlocked;
+        }
+        return PlayerPrefs.GetInt(UnlockedKey(levelId), 0) == 1;
+    }
+
+    public void SetLevelUnlocked(LevelSO level, bool unlocked)
+    {
+        if (level == null) return;
+        string levelId = GetLevelId(level);
+        if (string.IsNullOrEmpty(levelId)) return;
+        PlayerPrefs.SetInt(UnlockedKey(levelId), unlocked ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+
+    public bool IsNextLevel(LevelSO level)
+    {
+        if (level == null) return false;
+        for (int i = 0; i < levels.Count; i++)
+        {
+            LevelSO entry = levels[i];
+            if (entry == null) continue;
+            if (!IsLevelUnlocked(entry)) continue;
+            if (IsLevelCompleted(entry)) continue;
+            return entry == level;
+        }
+        return false;
     }
 
     public bool WasCompletedWithinTime(LevelSO level)
@@ -241,6 +279,37 @@ public class LevelSelector : MonoBehaviour
         PlayerPrefs.Save();
     }
 
+    void EnsureInitialUnlock()
+    {
+        if (levels.Count == 0) return;
+
+        bool anyUnlocked = false;
+        for (int i = 0; i < levels.Count; i++)
+        {
+            if (IsLevelUnlocked(levels[i]))
+            {
+                anyUnlocked = true;
+                break;
+            }
+        }
+
+        if (!anyUnlocked)
+        {
+            SetLevelUnlocked(levels[0], true);
+        }
+    }
+
+    void UnlockNextLevel(LevelSO currentLevel)
+    {
+        int index = levels.IndexOf(currentLevel);
+        if (index < 0) return;
+        int nextIndex = index + 1;
+        if (nextIndex < levels.Count && levels[nextIndex] != null)
+        {
+            SetLevelUnlocked(levels[nextIndex], true);
+        }
+    }
+
     string GetLevelId(LevelSO level)
     {
         if (level == null) return string.Empty;
@@ -262,5 +331,10 @@ public class LevelSelector : MonoBehaviour
     string BestTimeKey(string levelId)
     {
         return $"LevelBestTime_{levelId}";
+    }
+
+    string UnlockedKey(string levelId)
+    {
+        return $"LevelUnlocked_{levelId}";
     }
 }
