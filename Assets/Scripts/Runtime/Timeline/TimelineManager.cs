@@ -209,11 +209,17 @@ namespace ThiccTapeman.Timeline
             if (seconds <= 0f) return;
             LastRewindTime = Time.time;
 
+            if (IsTimePaused)
+            {
+                IsTimePaused = false;
+                OnPauseStateChanged?.Invoke(false);
+            }
+
             float fromTime = TimeNow;
             float toTime = Mathf.Max(0f, fromTime - seconds);
             List<PauseSegment> pauseSegmentsForBranch = BuildPauseSegmentsForBranch(fromTime);
 
-            if (IsTimePaused && pauseStartTime >= 0f)
+            if (pauseStartTime >= 0f)
             {
                 pauseSegments.Add(new PauseSegment(pauseStartTime, fromTime));
                 pauseStartTime = -1f;
