@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3bb3dd4df0b1fe4ea3ccb2305d99a32, type: 3}
   m_Name: Level3
   m_EditorClassIdentifier: Assembly-CSharp::LevelSO
-  levelId: level2
-  levelName: level2
+  levelId: level3
+  levelName: level3
   description: Level0
-  sceneName: Level2
-  sceneAsset: {fileID: 102900000, guid: dc291d9702a4eab41b32f1bd6e9f6635, type: 3}
+  sceneName: Level3
+  sceneAsset: {fileID: 102900000, guid: 628d8cdc92033b046bda754b5217dc59, type: 3}
   difficulty: 0
   targetTimeSeconds: 120
   defaultUnlocked: 0
