@@ -10,6 +10,7 @@ namespace ThiccTapeman.Inventory
         public float itemUseCooldown;
         public Sprite icon;
         public Sprite image;
+        public SoundManager.Sound sound;
 
     }
 }

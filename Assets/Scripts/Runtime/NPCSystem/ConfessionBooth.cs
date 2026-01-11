@@ -7,7 +7,7 @@ public class ConfessionBooth : InteractableObject
 
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip bellSound;
+    [SerializeField] private SoundManager.SoundVariations bellSounds;
 
     private void Start()
     {
@@ -25,9 +25,9 @@ public class ConfessionBooth : InteractableObject
 
     public void PlayBellSound()
     {
-        if (audioSource != null && bellSound != null)
+        if (audioSource != null && bellSounds != null)
         {
-            audioSource.PlayOneShot(bellSound);
+            bellSounds.PlaySound(audioSource);
         }
     }
 }

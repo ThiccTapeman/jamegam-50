@@ -19,8 +19,9 @@ MonoBehaviour:
   dashCooldown: 1
   dashLockSeconds: 0.35
   dashes:
-    mainClip: {fileID: 0}
+    mainClip: {fileID: 8300000, guid: 2b4bb81f72f33584bbcc2ba838686733, type: 3}
     loop: 0
+    volume: 0.5
     variations: []
   dashAudioSourceIndex: 1
   dashActionName: Dash

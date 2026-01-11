@@ -23,10 +23,15 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private float fadeSpeed = 1.25f;
     [SerializeField] private float choicesFadeDelay = 0.15f;
 
+    [Header("Sound")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private SoundManager.Sound confirmSound;
+
     private DialogueData currentDialogue;
     private DialogueState state;
     private bool isEndingDialogue;
     private string currentNPCName;
+
 
     private Queue<string> npcLineQueue = new Queue<string>();
 
@@ -92,6 +97,8 @@ public class DialogueManager : MonoBehaviour
 
     private void HandleClick()
     {
+        confirmSound.PlaySound(audioSource);
+
         if (typewriter.IsTyping)
         {
             typewriter.Skip();
@@ -114,7 +121,7 @@ public class DialogueManager : MonoBehaviour
                     {
                         booth.PlayBellSound();
                     }
-                    StartCoroutine(FadeOutAndEndDialogue());
+                    ShowLeaveButtonOnly();
                 }
                 else
                 {
@@ -147,8 +154,6 @@ public class DialogueManager : MonoBehaviour
                 CreateChoiceButton(choice);
             }
         }
-
-        CreateLeaveButton();
 
         if (!hasAvailableChoices)
         {
@@ -206,7 +211,7 @@ public class DialogueManager : MonoBehaviour
         button.transform.localScale = Vector3.zero;
         StartCoroutine(ScaleInButton(button.transform));
 
-        button.onClick.AddListener(() => HandleChoiceSelection(null));
+        button.onClick.AddListener(HandleLeaveSelected);
     }
 
     private IEnumerator ScaleInButton(Transform buttonTransform)
@@ -298,5 +303,29 @@ public class DialogueManager : MonoBehaviour
         
         // Reset canvas group alpha for next dialogue
         dialogueCanvasGroup.alpha = 1f;
+    }
+
+    private void ShowLeaveButtonOnly()
+    {
+        state = DialogueState.Choosing;
+        SetSpeakerName("You");
+        ClearChoices();
+        CreateLeaveButton();
+    }
+
+    private void HandleLeaveSelected()
+    {
+        LevelSelector selector = LevelSelector.GetInstance();
+        if (selector != null)
+        {
+            LevelSO current = selector.GetCurrentLevel();
+            LevelCompletionParams completionParams = LevelCompletionParams.FromTime(
+                LevelTimer.GetInstance().ElapsedTime,
+                current != null ? current.targetTimeSeconds : 0f
+            );
+            selector.CompleteLevel(completionParams);
+        }
+
+        StartCoroutine(FadeOutAndEndDialogue());
     }
 }

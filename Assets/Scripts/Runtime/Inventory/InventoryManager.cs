@@ -17,6 +17,7 @@ public class InventoryManager : MonoBehaviour
     public Action OnInventoryChanged;
     public Action OnCurrentSlotChanged;
     
+    public AudioSource source;
 
     public static InventoryManager GetInstance()
     {

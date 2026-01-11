@@ -4,13 +4,15 @@ using UnityEngine;
 public class StepButton : Button
 {
     int stepCount = 0;
-    private Animator anim;  
+    bool isPressed = false;
+    private Animator anim;
     private void Awake()
     {
         anim = GetComponent<Animator>();
         anim.SetBool("isPressed", isPressed);
     }
     private void OnTriggerEnter2D(Collider2D other)
+
     {
         if ((other.CompareTag("Player") && !other.isTrigger) || other.CompareTag("PlayerGhost"))
         {
