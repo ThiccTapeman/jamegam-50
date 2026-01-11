@@ -211,9 +211,11 @@ public class InventoryManager : MonoBehaviour
 
     public void RemoveItem(ItemSO itemSO, int amount)
     {
+        if (itemSO == null) return;
         foreach (var slot in slots)
         {
-            if (slot.itemSO.itemName == itemSO.itemName)
+            if (slot == null || slot.itemSO == null) continue;
+            if (slot.itemSO == itemSO)
             {
                 slot.Amount -= amount;
                 if (slot.Amount <= 0)
