@@ -80,7 +80,8 @@ public class UICameraLerp : MonoBehaviour
             float dt = useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
             elapsed += dt;
             float t = Mathf.Clamp01(elapsed / duration);
-            transform.position = Vector3.Lerp(from, destination, t);
+            float eased = Mathf.SmoothStep(0f, 1f, t);
+            transform.position = Vector3.Lerp(from, destination, eased);
             yield return null;
         }
 
