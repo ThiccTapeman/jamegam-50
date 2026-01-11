@@ -23,10 +23,15 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private float fadeSpeed = 1.25f;
     [SerializeField] private float choicesFadeDelay = 0.15f;
 
+    [Header("Sound")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private SoundManager.Sound confirmSound;
+
     private DialogueData currentDialogue;
     private DialogueState state;
     private bool isEndingDialogue;
     private string currentNPCName;
+
 
     private Queue<string> npcLineQueue = new Queue<string>();
 
@@ -92,6 +97,8 @@ public class DialogueManager : MonoBehaviour
 
     private void HandleClick()
     {
+        confirmSound.PlaySound(audioSource);
+
         if (typewriter.IsTyping)
         {
             typewriter.Skip();

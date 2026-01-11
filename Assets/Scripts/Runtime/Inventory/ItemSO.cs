@@ -9,6 +9,7 @@ namespace ThiccTapeman.Inventory
         public int maxStackSize;
         public float itemUseCooldown;
         public Sprite icon;
+        public SoundManager.Sound sound;
 
     }
 }

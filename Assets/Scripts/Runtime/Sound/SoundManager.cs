@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class SoundManager
+public class SoundManager : MonoBehaviour
 {
     [System.Serializable]
     public class Sound
@@ -8,9 +8,14 @@ public class SoundManager
         public AudioClip mainClip;
         public bool loop;
 
+        [Range(0.0f, 1f)]
+        public float volume = 1f;
+
         public virtual void PlaySound(AudioSource source)
         {
             if (source == null || mainClip == null) return;
+
+            source.volume = volume;
 
             if (loop)
             {
@@ -32,10 +37,11 @@ public class SoundManager
     public class SoundVariations : Sound
     {
         public AudioClip[] variations;
-
         public override void PlaySound(AudioSource source)
         {
             if (source == null) return;
+
+            source.volume = volume;
 
             int variationCount = variations != null ? variations.Length : 0;
             if (variationCount <= 0)
@@ -83,6 +89,7 @@ public class SoundManager
     public static void PlaySound(Sound sound, AudioSource source)
     {
         if (sound == null) return;
+
         sound.PlaySound(source);
     }
 }

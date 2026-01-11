@@ -29,6 +29,7 @@ public class Slot
         {
             if (EffectManager.GetInstance().TryApplyEffect(effectItem))
             {
+                itemSO.sound.PlaySound(InventoryManager.GetInstance().source);
                 InventoryManager.GetInstance().RemoveItem(itemSO, 1);
             }
         }

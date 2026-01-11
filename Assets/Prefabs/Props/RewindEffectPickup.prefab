@@ -237,6 +237,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Pickupable
   item: {fileID: 11400000, guid: 962fa9eaf926dc442a963c9c9f01f816, type: 2}
   quantity: 1
+  sounds:
+    mainClip: {fileID: 8300000, guid: 9ed2c543b5f76b74f862cafb4442ceff, type: 3}
+    loop: 0
+    volume: 0.6
+    variations: []
 --- !u!1 &9074805335587126953
 GameObject:
   m_ObjectHideFlags: 0

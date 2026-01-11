@@ -5,6 +5,8 @@ using UnityEngine;
 public class TypewriterText : MonoBehaviour
 {
     [SerializeField] private float charactersPerSecond = 40f;
+    [SerializeField] private SoundManager.Sound charSound;
+    [SerializeField] private AudioSource audioSource;
 
     private TextMeshProUGUI text;
     private Coroutine typingCoroutine;
@@ -32,6 +34,7 @@ public class TypewriterText : MonoBehaviour
 
         for (int i = 0; i <= totalCharacters; i++)
         {
+            charSound.PlaySound(audioSource);
             text.maxVisibleCharacters = i;
             yield return new WaitForSeconds(1f / charactersPerSecond);
         }
