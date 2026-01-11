@@ -19,6 +19,9 @@ namespace ThiccTapeman.Player.Movement
         // Physics
         public virtual void FixedUpdateAbility() { }
 
+        // Animation-only tick when movement is locked.
+        public virtual void FixedUpdateAnimationOnly() { }
+
         protected AudioSource GetOrCreateAudioSource(int index)
         {
             if (rb == null) return null;
