@@ -38,13 +38,27 @@ MonoBehaviour:
   shortJumpGravityMultiplier: 3
   fallGravityMultiplier: 2
   steps:
-    mainClip: {fileID: 0}
+    mainClip: {fileID: 8300000, guid: 365cc417f70b61c46a5d93538bfad0b3, type: 3}
     loop: 0
-    variations: []
+    volume: 0.486
+    variations:
+    - {fileID: 8300000, guid: 45102ab39a51e5d4a842e8819c0ad941, type: 3}
+    - {fileID: 8300000, guid: c44420f1786b5be44bc06c17915366f2, type: 3}
+    - {fileID: 8300000, guid: 8b5539b60c2ee3a45af3b5c034db5f24, type: 3}
+    - {fileID: 8300000, guid: 2c3abb39c0dbaad4db27aafdb6ee0ec4, type: 3}
+    - {fileID: 8300000, guid: 896023709e95c9a4aa1ad49425bb2964, type: 3}
+    - {fileID: 8300000, guid: 3adb792bf3a8c74498f6bfbcab5c25eb, type: 3}
   jumps:
-    mainClip: {fileID: 0}
+    mainClip: {fileID: 8300000, guid: c4548fdaee306b84290f3cc943b50566, type: 3}
     loop: 0
+    volume: 0.65
     variations: []
-  stepInterval: 0.35
+  landings:
+    mainClip: {fileID: 8300000, guid: 9f499d8cc482ca8438b27737898aa26b, type: 3}
+    loop: 0
+    volume: 0.6
+    variations: []
+  stepInterval: 0.4
   stepSpeedThreshold: 0.1
   soundAudioSourceIndex: 0
+  landingTimeThreshold: 0.03

@@ -48,9 +48,11 @@ namespace ThiccTapeman.Player.Movement
         [Header("Sounds")]
         [SerializeField] private SoundManager.SoundVariations steps; // each foot placement should play one step
         [SerializeField] private SoundManager.SoundVariations jumps;
+        [SerializeField] private SoundManager.SoundVariations landings;
         [SerializeField] private float stepInterval = 0.35f;
         [SerializeField] private float stepSpeedThreshold = 0.1f;
         [SerializeField] private int soundAudioSourceIndex = 0;
+        [SerializeField] private float landingTimeThreshold = 0.01f;
 
         private InputItem moveAction;
         private InputItem jumpAction;
@@ -78,7 +80,7 @@ namespace ThiccTapeman.Player.Movement
         private SpriteRenderer sr;
         private int facing = 1; // 1 right, -1 left
         private AudioSource soundSource;
-        private float lastStepTime = -Mathf.Infinity;
+        private float lastStepTime = 0;
 
         public override void AwakeAbility(InputManager inputManager, Rigidbody2D rb, Animator animator)
         {
@@ -174,8 +176,10 @@ namespace ThiccTapeman.Player.Movement
             float speed = Mathf.Abs(rb.linearVelocity.x);
             if (speed < stepSpeedThreshold) return;
             if (Time.time - lastStepTime < stepInterval) return;
+            Debug.Log("Got this far");
 
             SoundManager.PlaySound(steps, soundSource);
+            Debug.Log("Step");
             lastStepTime = Time.time;
         }
 
@@ -203,6 +207,7 @@ namespace ThiccTapeman.Player.Movement
 
             if (groundLeftHit.collider != null || groundRightHit.collider != null)
             {
+                if (!isGrounded) SoundManager.PlaySound(landings, soundSource);
                 isGrounded = true;
                 lastGroundedTime = Time.time;
             }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using ThiccTapeman.Player.Reset;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -23,17 +24,36 @@ public class Door : MonoBehaviour
     [SerializeField] private Vector3 slideDirection = Vector3.up; // direction to open
     [SerializeField] private AudioSource openingSource;
     [SerializeField] private SoundManager.Sound openingSound;
-
+    [SerializeField] private float fadeSpeed = 0.1f;
     private Vector3 closedPos;
     private Vector3 openPos;
 
     private ResetManager resetManager;
     private bool isOpenByDefault = false;
 
+    private Coroutine fadeCoroutine;
+
     private void HandleButtonStateChanged(bool pressed)
     {
         isOpen = pressed;
         Debug.Log("Door is now " + (isOpen ? "Open" : "Closed"));
+    }
+
+    IEnumerator FadeOut(AudioSource source, float duration)
+    {
+        float startVolume = source.volume;
+        float time = 0f;
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            source.volume = Mathf.Lerp(startVolume, 0f, time / duration);
+            yield return null;
+        }
+
+        source.volume = 0f;
+        source.Stop();
+        fadeCoroutine = null;
     }
 
     void Start()
@@ -71,14 +91,19 @@ public class Door : MonoBehaviour
 
         if (openingSource != null)
         {
-            if (isOpen && isMoving)
+            if (isMoving) //maybe check for isOpening too
             {
                 if (openingSound != null && !openingSource.isPlaying)
                     SoundManager.PlaySound(openingSound, openingSource);
+                    openingSource.volume = openingSound.volume;
+                    if (fadeCoroutine != null) {
+                        StopCoroutine(fadeCoroutine);
+                        fadeCoroutine = null;
+                    }
             }
-            else if (openingSource.isPlaying)
+            else if (openingSource.isPlaying && fadeCoroutine == null)
             {
-                openingSource.Stop();
+                fadeCoroutine = StartCoroutine(FadeOut(openingSource, fadeSpeed));
             }
         }
 

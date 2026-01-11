@@ -6,7 +6,9 @@ public class Pickupable : MonoBehaviour
 {
     [SerializeField] private ItemSO item;
     [SerializeField] private int quantity = 1;
+    [SerializeField] private SoundManager.SoundVariations sounds;
     private SpriteRenderer spriteRenderer;
+    private AudioSource soundSource;
 
     private bool isPickedup = false;
 
@@ -15,6 +17,7 @@ public class Pickupable : MonoBehaviour
     {
         ResetManager.GetInstance().OnReset += OnReset;
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        soundSource = gameObject.AddComponent<AudioSource>();
     }
 
     private void OnReset()
@@ -29,6 +32,7 @@ public class Pickupable : MonoBehaviour
         InventoryManager.GetInstance().AddItem(item, quantity);
         isPickedup = true;
         UpdateVisuals();
+        SoundManager.PlaySound(sounds, soundSource);
     }
 
     private void UpdateVisuals()
