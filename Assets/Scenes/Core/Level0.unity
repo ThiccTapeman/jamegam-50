@@ -21624,11 +21624,7 @@ MonoBehaviour:
     rid: -2
   m_ShadowCastingSource: 1
   m_ShadowMesh:
-<<<<<<< HEAD
-    m_Mesh: {fileID: 1243842573}
-=======
     m_Mesh: {fileID: 128723112}
->>>>>>> b4ad5d7af329aeb22d5d0b8160884ac6b3a23c73
     m_LocalBounds:
       m_Center: {x: 0.0024280548, y: -0.003011465, z: 0}
       m_Extent: {x: 0.51699257, y: 1.0001597, z: 0}
