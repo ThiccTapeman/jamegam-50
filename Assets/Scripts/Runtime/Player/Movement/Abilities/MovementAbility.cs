@@ -132,6 +132,12 @@ namespace ThiccTapeman.Player.Movement
             UpdateFootsteps();
         }
 
+        public override void FixedUpdateAnimationOnly()
+        {
+            UpdateEnvironmentChecks();
+            UpdateAnimatorAndFlip();
+        }
+
         /// <summary>
         /// 
         /// </summary>
