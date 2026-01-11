@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.Unity.VisualStudio.Editor;
 using ThiccTapeman.Input;
 using ThiccTapeman.Inventory;
 using TMPro;
@@ -17,7 +16,7 @@ public class InventoryManager : MonoBehaviour
 
     public Action OnInventoryChanged;
     public Action OnCurrentSlotChanged;
-    
+
     public AudioSource source;
 
     public static InventoryManager GetInstance()
@@ -96,7 +95,7 @@ public class InventoryManager : MonoBehaviour
         else
         {
             firstItemAmountText.text = "";
-        }   
+        }
         if (slots.Count > 1 && slots[1] != null)
         {
             secondItemAmountText.text = slots[1].Amount.ToString();
@@ -146,8 +145,8 @@ public class InventoryManager : MonoBehaviour
 
     private void SwapSlots(int slotIndex1, int slotIndex2)
     {
-        if (slots.Count < 2 || slotIndex1 < 0 || slotIndex2 < 0 || 
-            slotIndex1 >= slots.Count || slotIndex2 >= slots.Count) 
+        if (slots.Count < 2 || slotIndex1 < 0 || slotIndex2 < 0 ||
+            slotIndex1 >= slots.Count || slotIndex2 >= slots.Count)
             return;
 
         // Swap the items and amounts
@@ -179,7 +178,7 @@ public class InventoryManager : MonoBehaviour
             currentSlotIndex = i;
             OnCurrentSlotChanged?.Invoke();
             Debug.Log($"Switched to slot {currentSlotIndex} with a: {slots[currentSlotIndex].itemSO?.itemName ?? "Empty"}");
-            
+
             // Use the item in the selected slot
             UseItemInSlot(i);
             break;
@@ -210,7 +209,7 @@ public class InventoryManager : MonoBehaviour
     private bool UseItemInSlot(int slotIndex)
     {
         if (slots.Count == 0 || slotIndex < 0 || slotIndex >= slots.Count) return false;
-        
+
         // Check cooldown
         if (Time.time - lastUseTime < useCooldown && lastUseTime != -1) return false;
 
@@ -223,7 +222,7 @@ public class InventoryManager : MonoBehaviour
         {
             OnInventoryChanged?.Invoke();
         }
-        
+
 
         return used;
     }
