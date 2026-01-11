@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a9bc40bcbf364419999bade22f127b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Inventory
-  source: {fileID: 0}
+  source: {fileID: 3280939802423047526}
   slots:
   - Amount: 10
     itemSO: {fileID: 11400000, guid: 962fa9eaf926dc442a963c9c9f01f816, type: 2}

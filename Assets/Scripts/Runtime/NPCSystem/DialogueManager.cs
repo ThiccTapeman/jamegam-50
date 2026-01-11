@@ -4,6 +4,7 @@ using UIButton = UnityEngine.UI.Button;
 using System.Collections;
 using System.Collections.Generic;
 using ThiccTapeman.Input;
+using UnityEngine.Audio;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -26,6 +27,8 @@ public class DialogueManager : MonoBehaviour
     [Header("Sound")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private SoundManager.Sound confirmSound;
+    [SerializeField] private AudioSource musicSource;
+    [SerializeField] private AudioSource musicSource2;
 
     private DialogueData currentDialogue;
     private DialogueState state;
@@ -52,11 +55,18 @@ public class DialogueManager : MonoBehaviour
         StartCoroutine(FadeInDialogue(dialogue));
     }
 
-    
+    public static void SetMixerVolume(AudioMixer mixer, string param, float volume01)
+    {
+        float db = Mathf.Log10(Mathf.Clamp(volume01, 0.0001f, 1f)) * 20f;
+        mixer.SetFloat(param, db);
+    }
     private IEnumerator FadeInDialogue(DialogueData dialogue)
     {
         dialoguePanel.SetActive(true);
         dialogueCanvasGroup.alpha = 0f;
+
+        musicSource.volume *= 0.5f;        
+        musicSource2.volume *= 0.5f;
 
         npcText.text = "";
         typewriter.Skip(); 
@@ -175,7 +185,7 @@ public class DialogueManager : MonoBehaviour
             textGroup.alpha -= Time.deltaTime * fadeSpeed;
             yield return null;
         }
-        
+
         npcText.text = "";
         textGroup.alpha = 1f; 
     }
@@ -303,6 +313,10 @@ public class DialogueManager : MonoBehaviour
         
         // Reset canvas group alpha for next dialogue
         dialogueCanvasGroup.alpha = 1f;
+        if (musicSource.volume > 0.9f) musicSource.volume = 1;
+        else musicSource.volume *= 2f;
+        if (musicSource2.volume > 0.9f) musicSource2.volume = 1;
+        else musicSource2.volume *= 2f;
     }
 
     private void ShowLeaveButtonOnly()

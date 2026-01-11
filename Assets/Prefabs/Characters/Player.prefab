@@ -304,7 +304,7 @@ AudioSource:
   m_GameObject: {fileID: 3096865024357343239}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 6089433006466062264, guid: f77a248ef2c625549a870957b7139418, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
@@ -401,7 +401,7 @@ AudioSource:
   m_GameObject: {fileID: 3096865024357343239}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 5143070348903288145, guid: f77a248ef2c625549a870957b7139418, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
@@ -498,7 +498,7 @@ AudioSource:
   m_GameObject: {fileID: 3096865024357343239}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 5143070348903288145, guid: f77a248ef2c625549a870957b7139418, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
@@ -604,14 +604,15 @@ MonoBehaviour:
   sourceA: {fileID: 5849293012113508654}
   sourceB: {fileID: 3426769940064548659}
   ghostLayers:
-  - {fileID: 8300000, guid: 2f43dfacec88d014c92030ec9c8961a8, type: 3}
-  - {fileID: 8300000, guid: 6437c2741b94225499354611f19b7ad6, type: 3}
-  - {fileID: 8300000, guid: 2039205eb79746a4cb98af87f340a72f, type: 3}
-  - {fileID: 8300000, guid: f6b35cffd17f1fd4fb4adbec1d6ce379, type: 3}
-  - {fileID: 8300000, guid: a59a35fe3a30f944bbb60b501286a1d4, type: 3}
+  - {fileID: 8300000, guid: db0be77bc7311eb4b85c846ab99215fd, type: 3}
+  - {fileID: 8300000, guid: a65f4ab3ea708eb4eb968089b53406ef, type: 3}
+  - {fileID: 8300000, guid: 9994cd51f00f097409149c5e07a12d61, type: 3}
+  - {fileID: 8300000, guid: 8a8244c0b018f0c4eb2ed1513e57ea9c, type: 3}
+  - {fileID: 8300000, guid: 3f72acfc09604af4c87cc1d17b89c557, type: 3}
   timeStoppedLayer: {fileID: 8300000, guid: 9c2d8febc0dede849a93236ba604a7e9, type: 3}
-  layerFadeSeconds: 1
+  layerFadeSeconds: 2
   alignLayerTime: 1
   playOnStart: 1
   startingGhostCount: 1
   startTimeStopped: 0
+  currentGhostCount: 1

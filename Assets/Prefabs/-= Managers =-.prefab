@@ -58,7 +58,7 @@ MonoBehaviour:
   confirmSound:
     mainClip: {fileID: 8300000, guid: 97cb65854dd6786458ecaaaaa80fd2a5, type: 3}
     loop: 0
-    volume: 1
+    volume: 0.6
 --- !u!82 &1572478190160941936
 AudioSource:
   m_ObjectHideFlags: 0

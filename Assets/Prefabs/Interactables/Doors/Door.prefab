@@ -117,7 +117,7 @@ MonoBehaviour:
   openingSound:
     mainClip: {fileID: 8300000, guid: 6fca5c22893445a4a8b14e0682195b07, type: 3}
     loop: 1
-    volume: 0.6
+    volume: 0.4
   fadeSpeed: 0.3
 --- !u!61 &9142417604415169829
 BoxCollider2D:
