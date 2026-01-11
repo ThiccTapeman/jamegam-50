@@ -52,6 +52,8 @@ namespace ThiccTapeman.Timeline
         /// </summary>
         public float BranchTime { get; private set; }
 
+        public float LastRewindTime { get; private set; } = -10f;
+
         public bool IsTimePaused { get; private set; }
         public event Action<bool> OnPauseStateChanged;
 
@@ -200,6 +202,7 @@ namespace ThiccTapeman.Timeline
         {
             Debug.Log("Rewinding " + seconds + " seconds");
             if (seconds <= 0f) return;
+            LastRewindTime = Time.time;
 
             float fromTime = TimeNow;
             float toTime = Mathf.Max(0f, fromTime - seconds);

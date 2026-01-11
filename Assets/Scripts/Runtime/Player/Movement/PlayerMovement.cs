@@ -84,17 +84,17 @@ namespace ThiccTapeman.Player.Movement
 
 
 
-        bool IsMovementAllowed()
+        bool IsMovementLocked()
         {
             var manager = TimelineManager.TryGetInstance();
-            if (manager != null && !manager.IsRunning) return false;
-            if (DialogueManager.IsDialogueActive) return false;
-            return true;
+            if (manager != null && !manager.IsRunning) return true;
+            if (DialogueManager.IsDialogueActive) return true;
+            return false;
         }
 
         private void Update()
         {
-            if (!IsMovementAllowed()) return;
+            if (IsMovementLocked()) return;
 
             foreach (var ability in abilities)
             {
@@ -104,7 +104,14 @@ namespace ThiccTapeman.Player.Movement
 
         private void FixedUpdate()
         {
-            if (!IsMovementAllowed()) return;
+            if (IsMovementLocked())
+            {
+                foreach (var ability in abilities)
+                {
+                    ability.FixedUpdateAnimationOnly();
+                }
+                return;
+            }
 
             foreach (var ability in abilities)
             {
