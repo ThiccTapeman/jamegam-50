@@ -122,6 +122,7 @@ namespace ThiccTapeman.Player.Reset
         {
             currentSpawnPoint = spawnPoint;
             resetInventory = CloneSlots(slots);
+            LevelTimer.GetInstance().SetCheckpointReferenceToCurrent();
             Reset(false);
         }
 
