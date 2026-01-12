@@ -17,6 +17,7 @@ public class ResetZone : MonoBehaviour
         if (collision.CompareTag("PlayerGhost"))
         {
             Destroy(collision.gameObject);
+            TimelineManager.TryGetInstance()?.RequestGhostCountRefresh();
             return;
         }
 
@@ -24,6 +25,7 @@ public class ResetZone : MonoBehaviour
         if (timelineObject != null && timelineObject.IsBranchInstance)
         {
             Destroy(timelineObject.gameObject);
+            TimelineManager.TryGetInstance()?.RequestGhostCountRefresh();
             return;
         }
 

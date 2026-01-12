@@ -28,6 +28,7 @@ namespace ThiccTapeman.Player.Movement
         private float dashLockUntil = -Mathf.Infinity;
         private float cachedGravityScale = 1f;
         private bool isDashLocked;
+        private Vector2 lastMoveDir = Vector2.right;
 
         private Animator anim;
         private SpriteRenderer sr;
@@ -65,11 +66,14 @@ namespace ThiccTapeman.Player.Movement
         {
             if (rb == null || dashAction == null || moveAction == null) return;
 
+            Vector2 input = moveAction.ReadValue<Vector2>();
+            if (input.sqrMagnitude > 0.01f)
+                lastMoveDir = input.normalized;
+
             if (!dashAction.GetTriggered(true)) return;
             if (Time.time - lastDashTime < dashCooldown) return;
 
-            Vector2 input = moveAction.ReadValue<Vector2>();
-            queuedDir = input.sqrMagnitude > 0.01f ? input.normalized : Vector2.right;
+            queuedDir = input.sqrMagnitude > 0.01f ? input.normalized : GetDefaultDashDirection();
             dashQueued = true;
         }
 
@@ -124,6 +128,20 @@ namespace ThiccTapeman.Player.Movement
             Gizmos.color = Color.red;
             Vector3 o = rbRef.position;
             Gizmos.DrawLine(o, o + (Vector3)(queuedDir.normalized * 1.2f));
+        }
+
+        private Vector2 GetDefaultDashDirection()
+        {
+            if (lastMoveDir.sqrMagnitude > 0.01f)
+                return lastMoveDir;
+
+            if (rb != null && Mathf.Abs(rb.linearVelocity.x) > 0.01f)
+                return new Vector2(Mathf.Sign(rb.linearVelocity.x), 0f);
+
+            if (sr != null)
+                return sr.flipX ? Vector2.left : Vector2.right;
+
+            return Vector2.right;
         }
     }
 }

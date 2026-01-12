@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -61,6 +62,7 @@ namespace ThiccTapeman.Timeline
         readonly List<PauseSegment> pauseSegments = new List<PauseSegment>();
         float recordTimer;
         float pauseStartTime = -1f;
+        Coroutine ghostRefreshRoutine;
 
         public readonly struct PauseSegment
         {
@@ -199,6 +201,8 @@ namespace ThiccTapeman.Timeline
                 obj.ResetTimelineState();
                 obj.RecordState(TimeNow);
             }
+
+            RequestGhostCountRefresh();
         }
 
         // --- Rewind ---
@@ -257,7 +261,23 @@ namespace ThiccTapeman.Timeline
                 count = ghosts.Length;
             }
 
+            Debug.Log("GhostCount: " + count);
+
             music.SetGhostCount(count);
+        }
+
+        public void RequestGhostCountRefresh()
+        {
+            if (ghostRefreshRoutine != null)
+                StopCoroutine(ghostRefreshRoutine);
+            ghostRefreshRoutine = StartCoroutine(RefreshGhostCountNextFrame());
+        }
+
+        IEnumerator RefreshGhostCountNextFrame()
+        {
+            yield return new WaitForEndOfFrame();
+            UpdateGhostCountFromScene();
+            ghostRefreshRoutine = null;
         }
 
         void SyncMusicState()

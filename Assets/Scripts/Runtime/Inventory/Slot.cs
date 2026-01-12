@@ -27,13 +27,16 @@ public class Slot
 
         if (itemSO is EffectSO effectItem)
         {
-            if (EffectManager.GetInstance().TryApplyEffect(effectItem))
-            {
-                itemSO.sound.PlaySound(InventoryManager.GetInstance().source);
-                InventoryManager.GetInstance().RemoveItem(itemSO, 1);
-            }
+            if (!EffectManager.GetInstance().TryApplyEffect(effectItem))
+                return false;
+
+            itemSO.sound.PlaySound(InventoryManager.GetInstance().source);
+            InventoryManager.GetInstance().RemoveItem(itemSO, 1);
+            return true;
         }
 
+        itemSO.sound.PlaySound(InventoryManager.GetInstance().source);
+        InventoryManager.GetInstance().RemoveItem(itemSO, 1);
         return true;
     }
 }

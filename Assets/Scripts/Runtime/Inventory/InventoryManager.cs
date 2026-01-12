@@ -116,6 +116,8 @@ public class InventoryManager : MonoBehaviour
 
     private void Update()
     {
+        if (DialogueManager.IsDialogueActive) return;
+
         if (handleUseInput)
             HandleUseInput();
 
@@ -216,10 +218,10 @@ public class InventoryManager : MonoBehaviour
         Slot slot = slots[slotIndex];
         if (slot.itemSO == null) return false;
 
-        lastUseTime = Time.time;
         bool used = slot.TryUse();
         if (used)
         {
+            lastUseTime = Time.time;
             OnInventoryChanged?.Invoke();
         }
 
@@ -231,8 +233,10 @@ public class InventoryManager : MonoBehaviour
     {
         if (Time.time - lastUseTime < useCooldown && lastUseTime != -1) return false;
 
-        lastUseTime = Time.time;
-        return UseCurrentItem();
+        bool used = UseCurrentItem();
+        if (used)
+            lastUseTime = Time.time;
+        return used;
     }
 
     public void SetHandleInput(bool enabled)

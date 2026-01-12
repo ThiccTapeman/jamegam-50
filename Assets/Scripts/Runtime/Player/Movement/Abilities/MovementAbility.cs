@@ -113,7 +113,7 @@ namespace ThiccTapeman.Player.Movement
         public override void UpdateAbility()
         {
             // Cache input in Update (render rate)
-            cachedMoveInput = moveAction != null ? moveAction.ReadValue<Vector2>() : Vector2.zero;
+            cachedMoveInput = GetHorizontalInput();
 
             // Buffer jump press
             if (jumpAction != null && jumpAction.GetTriggered(true))
@@ -383,6 +383,23 @@ namespace ThiccTapeman.Player.Movement
             rb.linearVelocity = v + Vector2.up * Physics2D.gravity.y * extra * Time.fixedDeltaTime;
         }
 
+        private Vector2 GetHorizontalInput()
+        {
+            if (moveAction == null) return Vector2.zero;
+
+            Vector2 input = moveAction.ReadValue<Vector2>();
+            float absX = Mathf.Abs(input.x);
+            float absY = Mathf.Abs(input.y);
+
+            if (absX <= 0.0001f) return Vector2.zero;
+
+            // Prevent diagonal input from reducing horizontal speed.
+            float scale = Mathf.Max(absX, absY);
+            if (scale > 0.0001f)
+                input.x /= scale;
+
+            return new Vector2(input.x, 0f);
+        }
 
         public override void DrawGizmos(Rigidbody2D rbRef, Collider2D colRef)
         {

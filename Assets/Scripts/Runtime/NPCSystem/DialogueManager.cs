@@ -27,11 +27,17 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private SoundManager.Sound confirmSound;
 
+    [Header("Input")]
+    [SerializeField] private string inputMap = "Player";
+    [SerializeField] private string advanceActionName = "Interact";
+
     private DialogueData currentDialogue;
     private DialogueState state;
     private bool isEndingDialogue;
     private string currentNPCName;
 
+    private InputManager inputManager;
+    private InputItem advanceAction;
 
     private Queue<string> npcLineQueue = new Queue<string>();
 
@@ -42,6 +48,12 @@ public class DialogueManager : MonoBehaviour
         
         if (dialogueCanvasGroup == null)
             dialogueCanvasGroup = dialoguePanel.GetComponent<CanvasGroup>();
+    }
+
+    private void Start()
+    {
+        inputManager = InputManager.GetInstance();
+        advanceAction = inputManager.GetAction(inputMap, advanceActionName);
     }
 
     public void StartDialogue(DialogueData dialogue, string npcName = "???")
@@ -89,7 +101,11 @@ public class DialogueManager : MonoBehaviour
         if (!dialoguePanel.activeSelf)
             return;
 
-        if (Input.GetMouseButtonDown(0))
+        bool advance = Input.GetMouseButtonDown(0);
+        if (!advance && advanceAction != null && advanceAction.GetTriggered(true))
+            advance = true;
+
+        if (advance)
         {
             HandleClick();
         }

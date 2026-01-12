@@ -36,6 +36,11 @@ public sealed class InteractionItem : MonoBehaviour
 
     private void Update()
     {
+        if (DialogueManager.IsDialogueActive)
+        {
+            UpdatePrompt(null);
+            return;
+        }
         if (interactInput == null) return;
         if (interactInput.ReadValue<float>() <= 0.5f) return;
         if (Time.time - lastInteractTime < interactCooldown && lastInteractTime != -1f) return;
@@ -78,6 +83,11 @@ public sealed class InteractionItem : MonoBehaviour
     private void LateUpdate()
     {
         if (promptPrefab == null) return;
+        if (DialogueManager.IsDialogueActive)
+        {
+            UpdatePrompt(null);
+            return;
+        }
 
         var target = GetClosestInteractable();
         UpdatePrompt(target);
