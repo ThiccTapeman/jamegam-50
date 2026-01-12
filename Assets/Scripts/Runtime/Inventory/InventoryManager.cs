@@ -52,8 +52,9 @@ public class InventoryManager : MonoBehaviour
     public int currentSlotIndex = 0;
 
     private float lastUseTime = -1f;
+    private int lastUseFrame = -1;
 
-    private void Start()
+    private void Awake()
     {
         if (instance != null && instance != this)
         {
@@ -61,7 +62,10 @@ public class InventoryManager : MonoBehaviour
             return;
         }
         instance = this;
+    }
 
+    private void Start()
+    {
         inputManager = InputManager.GetInstance();
 
         Debug.Log("Setting up InventoryManager with max slots: " + maxSlots);
@@ -164,6 +168,7 @@ public class InventoryManager : MonoBehaviour
         OnInventoryChanged?.Invoke();
         OnCurrentSlotChanged?.Invoke();
         UpdateAmountTexts();
+        EnsureCurrentSlotValid();
     }
 
     private void HandleSlotHotkeys()
@@ -197,6 +202,7 @@ public class InventoryManager : MonoBehaviour
         if (used)
         {
             OnInventoryChanged?.Invoke();
+            EnsureCurrentSlotValid();
             Debug.Log($"Used item in slot {currentSlotIndex}. Remaining amount: {currentSlot.Amount}");
         }
         else
@@ -212,8 +218,7 @@ public class InventoryManager : MonoBehaviour
     {
         if (slots.Count == 0 || slotIndex < 0 || slotIndex >= slots.Count) return false;
 
-        // Check cooldown
-        if (Time.time - lastUseTime < useCooldown && lastUseTime != -1) return false;
+        if (!CanUseNow()) return false;
 
         Slot slot = slots[slotIndex];
         if (slot.itemSO == null) return false;
@@ -221,8 +226,9 @@ public class InventoryManager : MonoBehaviour
         bool used = slot.TryUse();
         if (used)
         {
-            lastUseTime = Time.time;
+            MarkUsed();
             OnInventoryChanged?.Invoke();
+            EnsureCurrentSlotValid();
         }
 
 
@@ -231,12 +237,28 @@ public class InventoryManager : MonoBehaviour
 
     public bool TryUseCurrentItem()
     {
-        if (Time.time - lastUseTime < useCooldown && lastUseTime != -1) return false;
+        if (!CanUseNow()) return false;
 
         bool used = UseCurrentItem();
         if (used)
-            lastUseTime = Time.time;
+        {
+            MarkUsed();
+            EnsureCurrentSlotValid();
+        }
         return used;
+    }
+
+    private bool CanUseNow()
+    {
+        if (Time.frameCount == lastUseFrame) return false;
+        if (Time.time - lastUseTime < useCooldown && lastUseTime != -1) return false;
+        return true;
+    }
+
+    private void MarkUsed()
+    {
+        lastUseTime = Time.time;
+        lastUseFrame = Time.frameCount;
     }
 
     public void SetHandleInput(bool enabled)
@@ -259,6 +281,7 @@ public class InventoryManager : MonoBehaviour
             slots[i].Amount = newSlots[i].Amount;
         }
         OnInventoryChanged?.Invoke();
+        EnsureCurrentSlotValid();
 
     }
 
@@ -272,6 +295,7 @@ public class InventoryManager : MonoBehaviour
             {
                 slot.Amount += amount;
                 OnInventoryChanged?.Invoke();
+                EnsureCurrentSlotValid();
                 return;
             }
         }
@@ -284,6 +308,7 @@ public class InventoryManager : MonoBehaviour
                 slot.itemSO = itemSO;
                 slot.Amount = amount;
                 OnInventoryChanged?.Invoke();
+                EnsureCurrentSlotValid();
                 return;
             }
         }
@@ -306,6 +331,7 @@ public class InventoryManager : MonoBehaviour
                     slot.Amount = 0;
                 }
                 OnInventoryChanged?.Invoke();
+                EnsureCurrentSlotValid();
                 return;
             }
         }
@@ -342,6 +368,37 @@ public class InventoryManager : MonoBehaviour
                 secondItemImage.sprite = null;
                 secondItemImage.enabled = false;
             }
+        }
+    }
+
+    private void EnsureCurrentSlotValid()
+    {
+        if (slots == null || slots.Count == 0) return;
+
+        int filledCount = 0;
+        int lastFilledIndex = -1;
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (slots[i] != null && slots[i].itemSO != null && slots[i].Amount > 0)
+            {
+                filledCount++;
+                lastFilledIndex = i;
+            }
+        }
+
+        if (filledCount == 0) return;
+
+        if (filledCount == 1 && currentSlotIndex != lastFilledIndex)
+        {
+            currentSlotIndex = lastFilledIndex;
+            OnCurrentSlotChanged?.Invoke();
+            return;
+        }
+
+        if ((slots[currentSlotIndex] == null || slots[currentSlotIndex].itemSO == null || slots[currentSlotIndex].Amount <= 0) && lastFilledIndex != -1)
+        {
+            currentSlotIndex = lastFilledIndex;
+            OnCurrentSlotChanged?.Invoke();
         }
     }
 }
