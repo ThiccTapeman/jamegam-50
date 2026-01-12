@@ -149,6 +149,8 @@ public class DialogueManager : MonoBehaviour
             {
                 if (choice.hasBeenChosen)
                     continue;
+                if (string.IsNullOrWhiteSpace(choice.choiceText))
+                    continue;
 
                 hasAvailableChoices = true;
                 CreateChoiceButton(choice);
@@ -237,7 +239,7 @@ public class DialogueManager : MonoBehaviour
 
     private void HandleChoiceSelection(List<string> responses)
     {
-        if (responses == null)
+        if (responses == null || responses.Count == 0)
         {
             TriggerEndDialogue();
         }
@@ -251,6 +253,12 @@ public class DialogueManager : MonoBehaviour
     {
         ClearChoices();
         npcLineQueue.Clear();
+
+        if (string.IsNullOrWhiteSpace(currentDialogue.endLine))
+        {
+            StartCoroutine(FadeOutAndEndDialogue());
+            return;
+        }
 
         npcLineQueue.Enqueue(currentDialogue.endLine);
 
@@ -267,7 +275,16 @@ public class DialogueManager : MonoBehaviour
         npcLineQueue.Clear();
 
         foreach (var line in responses)
-            npcLineQueue.Enqueue(line);
+        {
+            if (!string.IsNullOrWhiteSpace(line))
+                npcLineQueue.Enqueue(line);
+        }
+
+        if (npcLineQueue.Count == 0)
+        {
+            TriggerEndDialogue();
+            return;
+        }
 
         state = DialogueState.NPCResponding;
         SetSpeakerName(currentNPCName);

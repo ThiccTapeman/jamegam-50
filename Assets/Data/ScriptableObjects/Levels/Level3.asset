@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelSO
   levelId: level3
   levelName: level3
-  description: Level0
+  description: Level3
   sceneName: Level3
   sceneAsset: {fileID: 102900000, guid: 628d8cdc92033b046bda754b5217dc59, type: 3}
   difficulty: 0

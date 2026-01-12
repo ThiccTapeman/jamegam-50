@@ -26,7 +26,7 @@ public class LevelSelector : MonoBehaviour
     {
         if (instance == null)
         {
-            instance = FindObjectOfType<LevelSelector>();
+            instance = FindAnyObjectByType<LevelSelector>();
             if (instance == null)
             {
                 GameObject obj = new GameObject("LevelSelector");
@@ -134,13 +134,25 @@ public class LevelSelector : MonoBehaviour
             return;
         }
 
+        UpdateCurrentLevelIndexFromScene();
+        
         int nextIndex = currentLevelIndex < 0 ? 0 : currentLevelIndex + 1;
+        
+        Debug.Log($"LevelSelector: Current level index: {currentLevelIndex}, Next index: {nextIndex}, Total levels: {levels.Count}");
+        
         if (nextIndex >= levels.Count)
         {
             Debug.Log("LevelSelector: last level completed.");
             return;
         }
 
+        if (levels[nextIndex] == null)
+        {
+            Debug.LogWarning($"LevelSelector: next level at index {nextIndex} is null.");
+            return;
+        }
+
+        Debug.Log($"LevelSelector: Loading next level: {levels[nextIndex].name} (scene: {levels[nextIndex].sceneName})");
         LoadLevel(nextIndex);
     }
 
